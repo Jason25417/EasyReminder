@@ -1,0 +1,71 @@
+<svg width="1024" height="1024" viewBox="0 0 1024 1024" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <!-- 玻璃主体渐变：上浅下深的蓝调半透明 -->
+    <linearGradient id="glassBody" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%"  stop-color="#8FD3FF" stop-opacity="0.55"/>
+      <stop offset="45%" stop-color="#5AA8FF" stop-opacity="0.42"/>
+      <stop offset="100%" stop-color="#2D6BE0" stop-opacity="0.55"/>
+    </linearGradient>
+
+    <!-- 顶部光泽高光 -->
+    <linearGradient id="gloss" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%"  stop-color="#FFFFFF" stop-opacity="0.85"/>
+      <stop offset="100%" stop-color="#FFFFFF" stop-opacity="0"/>
+    </linearGradient>
+
+    <!-- 镜面描边渐变 -->
+    <linearGradient id="rim" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%"  stop-color="#FFFFFF" stop-opacity="0.95"/>
+      <stop offset="50%" stop-color="#FFFFFF" stop-opacity="0.25"/>
+      <stop offset="100%" stop-color="#9CC9FF" stop-opacity="0.7"/>
+    </linearGradient>
+
+    <!-- 对勾渐变 -->
+    <linearGradient id="check" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%"  stop-color="#FFFFFF"/>
+      <stop offset="100%" stop-color="#EAF4FF"/>
+    </linearGradient>
+
+    <!-- 柔和投影 -->
+    <filter id="shadow" x="-30%" y="-30%" width="160%" height="160%">
+      <feDropShadow dx="0" dy="26" stdDeviation="34" flood-color="#1E4FA8" flood-opacity="0.30"/>
+    </filter>
+
+    <!-- 高光模糊 -->
+    <filter id="soft" x="-30%" y="-30%" width="160%" height="160%">
+      <feGaussianBlur stdDeviation="10"/>
+    </filter>
+  </defs>
+
+  <!-- 玻璃主体（squircle），画布其余部分保持透明 -->
+  <g filter="url(#shadow)">
+    <rect x="172" y="172" width="680" height="680" rx="200" ry="200" fill="url(#glassBody)"/>
+    <rect x="172" y="172" width="680" height="680" rx="200" ry="200"
+          fill="none" stroke="url(#rim)" stroke-width="6"/>
+  </g>
+
+  <!-- 顶部玻璃光泽 -->
+  <g filter="url(#soft)">
+    <path d="M212 372
+             Q212 212 372 212
+             L652 212
+             Q812 212 812 372
+             L812 430
+             Q620 360 212 446 Z"
+          fill="url(#gloss)" opacity="0.7"/>
+  </g>
+
+  <!-- 内侧细高光线 -->
+  <rect x="196" y="196" width="632" height="632" rx="176" ry="176"
+        fill="none" stroke="#FFFFFF" stroke-opacity="0.25" stroke-width="2"/>
+
+  <!-- 对勾 -->
+  <path d="M360 528 L470 636 L676 396"
+        fill="none" stroke="url(#check)" stroke-width="62"
+        stroke-linecap="round" stroke-linejoin="round"/>
+  <!-- 对勾下方淡淡反光 -->
+  <path d="M360 528 L470 636 L676 396"
+        fill="none" stroke="#2D6BE0" stroke-opacity="0.18" stroke-width="62"
+        stroke-linecap="round" stroke-linejoin="round"
+        transform="translate(0,8)"/>
+</svg>

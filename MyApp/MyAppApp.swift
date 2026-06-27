@@ -1,17 +1,13 @@
-//
-//  MyAppApp.swift
-//  MyApp
-//
-//  Created by Jason Tu on 6/23/26.
-//
-
 import SwiftUI
 
 @main
 struct MyAppApp: App {
+    private let remindersService: RemindersService = EventKitRemindersService()
+
     var body: some Scene {
         WindowGroup {
-            ContentView()
+            RootView(importVM: ImportViewModel(service: remindersService),
+                     exportVM: ExportViewModel(service: remindersService))
         }
     }
 }
