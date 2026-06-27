@@ -7,7 +7,7 @@ struct ICSExporter {
         var lines: [String] = [
             "BEGIN:VCALENDAR",
             "VERSION:2.0",
-            "PRODID:-//MyApp//Export//EN",
+            "PRODID:-//EasyReminder//Export//EN",
             "CALSCALE:GREGORIAN",
         ]
         for item in items { lines.append(contentsOf: vtodo(item)) }

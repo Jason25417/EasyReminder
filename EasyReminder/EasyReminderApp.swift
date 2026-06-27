@@ -1,7 +1,7 @@
 import SwiftUI
 
 @main
-struct MyAppApp: App {
+struct EasyReminderApp: App {
     private let remindersService: RemindersService = EventKitRemindersService()
 
     var body: some Scene {

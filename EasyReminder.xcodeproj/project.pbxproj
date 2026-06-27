@@ -7,13 +7,13 @@
 	objects = {
 
 /* Begin PBXFileReference section */
-		B5942C2B2FEA3ADB00D32611 /* MyApp.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = MyApp.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		B5942C2B2FEA3ADB00D32611 /* EasyReminder.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = EasyReminder.app; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedRootGroup section */
-		B5942C2D2FEA3ADB00D32611 /* MyApp */ = {
+		B5942C2D2FEA3ADB00D32611 /* EasyReminder */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
-			path = MyApp;
+			path = EasyReminder;
 			sourceTree = "<group>";
 		};
 /* End PBXFileSystemSynchronizedRootGroup section */
@@ -30,7 +30,7 @@
 		B5942C222FEA3ADB00D32611 = {
 			isa = PBXGroup;
 			children = (
-				B5942C2D2FEA3ADB00D32611 /* MyApp */,
+				B5942C2D2FEA3ADB00D32611 /* EasyReminder */,
 				B5942C2C2FEA3ADB00D32611 /* Products */,
 			);
 			sourceTree = "<group>";
@@ -38,7 +38,7 @@
 		B5942C2C2FEA3ADB00D32611 /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				B5942C2B2FEA3ADB00D32611 /* MyApp.app */,
+				B5942C2B2FEA3ADB00D32611 /* EasyReminder.app */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -46,9 +46,9 @@
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
-		B5942C2A2FEA3ADB00D32611 /* MyApp */ = {
+		B5942C2A2FEA3ADB00D32611 /* EasyReminder */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = B5942C362FEA3ADD00D32611 /* Build configuration list for PBXNativeTarget "MyApp" */;
+			buildConfigurationList = B5942C362FEA3ADD00D32611 /* Build configuration list for PBXNativeTarget "EasyReminder" */;
 			buildPhases = (
 				B5942C272FEA3ADB00D32611 /* Sources */,
 				B5942C282FEA3ADB00D32611 /* Frameworks */,
@@ -57,11 +57,11 @@
 			buildRules = (
 			);
 			fileSystemSynchronizedGroups = (
-				B5942C2D2FEA3ADB00D32611 /* MyApp */,
+				B5942C2D2FEA3ADB00D32611 /* EasyReminder */,
 			);
-			name = MyApp;
-			productName = MyApp;
-			productReference = B5942C2B2FEA3ADB00D32611 /* MyApp.app */;
+			name = EasyReminder;
+			productName = EasyReminder;
+			productReference = B5942C2B2FEA3ADB00D32611 /* EasyReminder.app */;
 			productType = "com.apple.product-type.application";
 		};
 /* End PBXNativeTarget section */
@@ -79,7 +79,7 @@
 					};
 				};
 			};
-			buildConfigurationList = B5942C262FEA3ADB00D32611 /* Build configuration list for PBXProject "MyApp" */;
+			buildConfigurationList = B5942C262FEA3ADB00D32611 /* Build configuration list for PBXProject "EasyReminder" */;
 			developmentRegion = en;
 			hasScannedForEncodings = 0;
 			knownRegions = (
@@ -93,7 +93,7 @@
 			projectDirPath = "";
 			projectRoot = "";
 			targets = (
-				B5942C2A2FEA3ADB00D32611 /* MyApp */,
+				B5942C2A2FEA3ADB00D32611 /* EasyReminder */,
 			);
 		};
 /* End PBXProject section */
@@ -115,7 +115,7 @@
 /* End PBXSourcesBuildPhase section */
 
 /* Begin XCBuildConfiguration section */
-		B5942C342FEA3ADD00D32611 /* Debug configuration for PBXProject "MyApp" */ = {
+		B5942C342FEA3ADD00D32611 /* Debug configuration for PBXProject "EasyReminder" */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
@@ -179,7 +179,7 @@
 			};
 			name = Debug;
 		};
-		B5942C352FEA3ADD00D32611 /* Release configuration for PBXProject "MyApp" */ = {
+		B5942C352FEA3ADD00D32611 /* Release configuration for PBXProject "EasyReminder" */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
@@ -235,7 +235,7 @@
 			};
 			name = Release;
 		};
-		B5942C372FEA3ADD00D32611 /* Debug configuration for PBXNativeTarget "MyApp" */ = {
+		B5942C372FEA3ADD00D32611 /* Debug configuration for PBXNativeTarget "EasyReminder" */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
@@ -281,7 +281,7 @@
 			};
 			name = Debug;
 		};
-		B5942C382FEA3ADD00D32611 /* Release configuration for PBXNativeTarget "MyApp" */ = {
+		B5942C382FEA3ADD00D32611 /* Release configuration for PBXNativeTarget "EasyReminder" */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
@@ -330,19 +330,19 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
-		B5942C262FEA3ADB00D32611 /* Build configuration list for PBXProject "MyApp" */ = {
+		B5942C262FEA3ADB00D32611 /* Build configuration list for PBXProject "EasyReminder" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
-				B5942C342FEA3ADD00D32611 /* Debug configuration for PBXProject "MyApp" */,
-				B5942C352FEA3ADD00D32611 /* Release configuration for PBXProject "MyApp" */,
+				B5942C342FEA3ADD00D32611 /* Debug configuration for PBXProject "EasyReminder" */,
+				B5942C352FEA3ADD00D32611 /* Release configuration for PBXProject "EasyReminder" */,
 			);
 			defaultConfigurationName = Release;
 		};
-		B5942C362FEA3ADD00D32611 /* Build configuration list for PBXNativeTarget "MyApp" */ = {
+		B5942C362FEA3ADD00D32611 /* Build configuration list for PBXNativeTarget "EasyReminder" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
-				B5942C372FEA3ADD00D32611 /* Debug configuration for PBXNativeTarget "MyApp" */,
-				B5942C382FEA3ADD00D32611 /* Release configuration for PBXNativeTarget "MyApp" */,
+				B5942C372FEA3ADD00D32611 /* Debug configuration for PBXNativeTarget "EasyReminder" */,
+				B5942C382FEA3ADD00D32611 /* Release configuration for PBXNativeTarget "EasyReminder" */,
 			);
 			defaultConfigurationName = Release;
 		};
