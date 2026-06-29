@@ -75,4 +75,22 @@ final class ICSParserTests: XCTestCase {
         let text = ics(["BEGIN:VTODO", "SUMMARY:很长的标", " 题继续", "END:VTODO"])
         XCTAssertEqual(parser.parse(text).first?.title, "很长的标题继续")
     }
+
+    func testIgnoredFieldsDetected() {
+        let text = ics([
+            "BEGIN:VTODO", "SUMMARY:x",
+            "CATEGORIES:work,urgent",        // 2 个标签
+            "RELATED-TO:parent-uid",          // 1 个子任务
+            "ATTACH:https://example.com/a.pdf",
+            "ATTACH:https://example.com/b.pdf", // 2 个附件
+            "END:VTODO",
+        ])
+        let item = parser.parse(text).first!
+        XCTAssertEqual(Set(item.ignoredFields), [.tags(2), .subtasks(1), .attachments(2)])
+    }
+
+    func testNoIgnoredFields() {
+        let item = parser.parse(ics(["BEGIN:VTODO", "SUMMARY:x", "END:VTODO"])).first!
+        XCTAssertTrue(item.ignoredFields.isEmpty)
+    }
 }

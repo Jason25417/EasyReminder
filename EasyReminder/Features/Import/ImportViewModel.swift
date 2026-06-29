@@ -71,7 +71,9 @@ final class ImportViewModel {
                 return
             }
             let count = try await service.importReminders(items, intoListNamed: listName)
-            status = "成功导入 \(count) 条" + (listName == nil ? "（默认列表）" : "（列表：\(listName!)）")
+            var message = "成功导入 \(count) 条" + (listName == nil ? "（默认列表）" : "（列表：\(listName!)）")
+            if let note = Self.ignoredSummary(items) { message += "\n" + note }
+            status = message
         } catch RemindersError.accessDenied {
             status = "失败：提醒事项权限被拒绝"
         } catch RemindersError.noDefaultList {
@@ -79,5 +81,24 @@ final class ImportViewModel {
         } catch {
             status = "失败：\(error.localizedDescription)"
         }
+    }
+
+    /// 汇总被忽略的私有字段，生成给用户的一句提示；没有则返回 nil。
+    private static func ignoredSummary(_ items: [ReminderItem]) -> String? {
+        let affected = items.filter { !$0.ignoredFields.isEmpty }
+        guard !affected.isEmpty else { return nil }
+        var subtasks = 0, tags = 0, attachments = 0
+        for field in items.flatMap(\.ignoredFields) {
+            switch field {
+            case .subtasks(let n):    subtasks += n
+            case .tags(let n):        tags += n
+            case .attachments(let n): attachments += n
+            }
+        }
+        var parts: [String] = []
+        if subtasks > 0    { parts.append("\(subtasks) 个子任务") }
+        if tags > 0        { parts.append("\(tags) 个标签") }
+        if attachments > 0 { parts.append("\(attachments) 个附件") }
+        return "注意：\(affected.count) 条含本 App 写不进的字段（\(parts.joined(separator: "、"))），已忽略"
     }
 }

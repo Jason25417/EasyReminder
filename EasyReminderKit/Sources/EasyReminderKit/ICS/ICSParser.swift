@@ -10,6 +10,30 @@ public struct ICSParser {
 
     public init() {}
 
+    /// 累计一条 VTODO 里 EventKit 写不进的私有字段（标签/子任务/附件）。
+    private struct IgnoredCounter {
+        var subtasks = 0
+        var tags = 0
+        var attachments = 0
+
+        mutating func note(property name: String, value: String) {
+            switch name {
+            case "RELATED-TO": subtasks += 1
+            case "ATTACH":     attachments += 1
+            case "CATEGORIES": tags += value.split(separator: ",").count
+            default: break
+            }
+        }
+
+        func fields() -> [IgnoredField] {
+            var result: [IgnoredField] = []
+            if subtasks > 0    { result.append(.subtasks(subtasks)) }
+            if tags > 0        { result.append(.tags(tags)) }
+            if attachments > 0 { result.append(.attachments(attachments)) }
+            return result
+        }
+    }
+
     public func parse(_ text: String) -> [ReminderItem] {
         let lines = unfold(text)
         var items: [ReminderItem] = []
@@ -17,24 +41,33 @@ public struct ICSParser {
         var todo: Props?
         var alarms: [Props] = []
         var alarm: Props?
+        var ignored = IgnoredCounter()
 
         for line in lines {
             let trimmed = line.trimmingCharacters(in: .whitespaces)
             switch trimmed {
             case "BEGIN:VTODO":
-                todo = [:]; alarms = []; alarm = nil
+                todo = [:]; alarms = []; alarm = nil; ignored = IgnoredCounter()
             case "BEGIN:VALARM":
                 alarm = [:]
             case "END:VALARM":
                 if let a = alarm { alarms.append(a) }
                 alarm = nil
             case "END:VTODO":
-                if let t = todo { items.append(makeItem(from: t, alarmBlocks: alarms)) }
+                if let t = todo {
+                    var item = makeItem(from: t, alarmBlocks: alarms)
+                    item.ignoredFields = ignored.fields()
+                    items.append(item)
+                }
                 todo = nil; alarms = []
             default:
                 guard let (name, params, value) = parseProperty(line) else { continue }
-                if alarm != nil { alarm?[name] = (params, value) }
-                else if todo != nil { todo?[name] = (params, value) }
+                if alarm != nil {
+                    alarm?[name] = (params, value)
+                } else if todo != nil {
+                    todo?[name] = (params, value)
+                    ignored.note(property: name, value: value)
+                }
             }
         }
         return items

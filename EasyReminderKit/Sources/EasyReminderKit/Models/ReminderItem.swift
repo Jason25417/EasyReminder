@@ -1,7 +1,7 @@
 import Foundation
 
 /// 从 ICS(VTODO) 解析出的一条待办，也是导出时的中间表示。
-/// 只含 EventKit 可写入的字段。
+/// 只含 EventKit 可写入的字段；`ignoredFields` 记录解析到但写不进的私有字段。
 public struct ReminderItem: Identifiable {
     public let id = UUID()
     public var title: String
@@ -14,6 +14,7 @@ public struct ReminderItem: Identifiable {
     public var uid: String?
     public var alarms: [ReminderAlarm]
     public var recurrence: RecurrenceRule?
+    public var ignoredFields: [IgnoredField]
 
     public init(title: String,
                 notes: String? = nil,
@@ -24,7 +25,8 @@ public struct ReminderItem: Identifiable {
                 url: URL? = nil,
                 uid: String? = nil,
                 alarms: [ReminderAlarm] = [],
-                recurrence: RecurrenceRule? = nil) {
+                recurrence: RecurrenceRule? = nil,
+                ignoredFields: [IgnoredField] = []) {
         self.title = title
         self.notes = notes
         self.dueDate = dueDate
@@ -35,5 +37,6 @@ public struct ReminderItem: Identifiable {
         self.uid = uid
         self.alarms = alarms
         self.recurrence = recurrence
+        self.ignoredFields = ignoredFields
     }
 }
