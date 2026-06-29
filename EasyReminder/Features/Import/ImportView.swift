@@ -14,7 +14,7 @@ struct ImportView: View {
             Text("ICS 导入到提醒事项")
                 .font(.headline)
 
-            Button("选择 .ics 文件并导入") { showingPicker = true }
+            Button("选择 .ics 文件导入（可多选）") { showingPicker = true }
                 .buttonStyle(.borderedProminent)
 
             Text(viewModel.status)
@@ -26,10 +26,10 @@ struct ImportView: View {
         .frame(minWidth: 440, minHeight: 240)
         .fileImporter(isPresented: $showingPicker,
                       allowedContentTypes: Self.icsTypes,
-                      allowsMultipleSelection: false) { result in
+                      allowsMultipleSelection: true) { result in
             switch result {
             case .success(let urls):
-                if let url = urls.first { Task { await viewModel.beginImport(at: url) } }
+                if !urls.isEmpty { Task { await viewModel.beginImport(at: urls) } }
             case .failure(let error):
                 viewModel.status = "选择文件失败：\(error.localizedDescription)"
             }
