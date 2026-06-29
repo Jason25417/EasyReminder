@@ -8,6 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		B5316FAC2FF2AE4E008A96E1 /* EasyReminderKit in Frameworks */ = {isa = PBXBuildFile; productRef = B5316FAB2FF2AE4E008A96E1 /* EasyReminderKit */; };
+		B53171E52FF2BB0D008A96E1 /* Sparkle in Frameworks */ = {isa = PBXBuildFile; productRef = B53171E42FF2BB0D008A96E1 /* Sparkle */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -27,6 +28,7 @@
 			isa = PBXFrameworksBuildPhase;
 			files = (
 				B5316FAC2FF2AE4E008A96E1 /* EasyReminderKit in Frameworks */,
+				B53171E52FF2BB0D008A96E1 /* Sparkle in Frameworks */,
 			);
 		};
 /* End PBXFrameworksBuildPhase section */
@@ -67,6 +69,7 @@
 			name = EasyReminder;
 			packageProductDependencies = (
 				B5316FAB2FF2AE4E008A96E1 /* EasyReminderKit */,
+				B53171E42FF2BB0D008A96E1 /* Sparkle */,
 			);
 			productName = EasyReminder;
 			productReference = B5942C2B2FEA3ADB00D32611 /* EasyReminder.app */;
@@ -98,6 +101,7 @@
 			minimizedProjectReferenceProxies = 1;
 			packageReferences = (
 				B5316FAA2FF2AE4E008A96E1 /* XCLocalSwiftPackageReference "EasyReminderKit" */,
+				B53171E32FF2BB0D008A96E1 /* XCRemoteSwiftPackageReference "Sparkle" */,
 			);
 			preferredProjectObjectVersion = 77;
 			productRefGroup = B5942C2C2FEA3ADB00D32611 /* Products */;
@@ -368,10 +372,26 @@
 		};
 /* End XCLocalSwiftPackageReference section */
 
+/* Begin XCRemoteSwiftPackageReference section */
+		B53171E32FF2BB0D008A96E1 /* XCRemoteSwiftPackageReference "Sparkle" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/sparkle-project/Sparkle";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 2.9.3;
+			};
+		};
+/* End XCRemoteSwiftPackageReference section */
+
 /* Begin XCSwiftPackageProductDependency section */
 		B5316FAB2FF2AE4E008A96E1 /* EasyReminderKit */ = {
 			isa = XCSwiftPackageProductDependency;
 			productName = EasyReminderKit;
+		};
+		B53171E42FF2BB0D008A96E1 /* Sparkle */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = B53171E32FF2BB0D008A96E1 /* XCRemoteSwiftPackageReference "Sparkle" */;
+			productName = Sparkle;
 		};
 /* End XCSwiftPackageProductDependency section */
 	};
