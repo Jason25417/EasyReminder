@@ -1,9 +1,11 @@
 import Foundation
 
 /// 把 [ReminderItem] 序列化成 ICS(VTODO) 文本。
-struct ICSExporter {
+public struct ICSExporter {
 
-    func export(_ items: [ReminderItem]) -> String {
+    public init() {}
+
+    public func export(_ items: [ReminderItem]) -> String {
         var lines: [String] = [
             "BEGIN:VCALENDAR",
             "VERSION:2.0",

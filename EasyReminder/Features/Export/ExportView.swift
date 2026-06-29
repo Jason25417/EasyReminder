@@ -1,5 +1,6 @@
 import SwiftUI
 import UniformTypeIdentifiers
+import EasyReminderKit
 
 struct ExportView: View {
     @State private var viewModel: ExportViewModel

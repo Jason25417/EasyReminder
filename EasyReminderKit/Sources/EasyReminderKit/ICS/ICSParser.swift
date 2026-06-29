@@ -4,11 +4,13 @@ import Foundation
 /// 支持：RFC 5545 行展开、多个 VTODO、VALARM 子块、属性参数。
 /// 字段：SUMMARY/DESCRIPTION/DUE/DTSTART/PRIORITY/STATUS/URL/UID/RRULE，
 /// 以及 VALARM 的定时(TRIGGER)与地点(X-APPLE-PROXIMITY + 结构化地点)。
-struct ICSParser {
+public struct ICSParser {
 
     private typealias Props = [String: (params: [String: String], value: String)]
 
-    func parse(_ text: String) -> [ReminderItem] {
+    public init() {}
+
+    public func parse(_ text: String) -> [ReminderItem] {
         let lines = unfold(text)
         var items: [ReminderItem] = []
 

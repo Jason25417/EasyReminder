@@ -1,4 +1,5 @@
 import SwiftUI
+import EasyReminderKit
 
 @main
 struct EasyReminderApp: App {

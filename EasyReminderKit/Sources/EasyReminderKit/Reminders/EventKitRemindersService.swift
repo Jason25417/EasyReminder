@@ -2,14 +2,16 @@ import Foundation
 import EventKit
 import CoreLocation
 
-final class EventKitRemindersService: RemindersService {
+public final class EventKitRemindersService: RemindersService {
     private let store = EKEventStore()
 
-    func requestAccess() async throws -> Bool {
+    public init() {}
+
+    public func requestAccess() async throws -> Bool {
         try await store.requestFullAccessToReminders()
     }
 
-    func addTestReminder(title: String) async throws {
+    public func addTestReminder(title: String) async throws {
         // 1. 申请完全访问权限
         let granted = try await store.requestFullAccessToReminders()
         guard granted else { throw RemindersError.accessDenied }
@@ -26,7 +28,7 @@ final class EventKitRemindersService: RemindersService {
         try store.save(reminder, commit: true)
     }
 
-    func importReminders(_ items: [ReminderItem], intoListNamed listName: String?) async throws -> Int {
+    public func importReminders(_ items: [ReminderItem], intoListNamed listName: String?) async throws -> Int {
         let granted = try await store.requestFullAccessToReminders()
         guard granted else { throw RemindersError.accessDenied }
 
@@ -110,7 +112,7 @@ final class EventKitRemindersService: RemindersService {
 
     // MARK: - 导出：读取
 
-    func fetchLists() async throws -> [ExportTarget] {
+    public func fetchLists() async throws -> [ExportTarget] {
         let granted = try await store.requestFullAccessToReminders()
         guard granted else { throw RemindersError.accessDenied }
         return store.calendars(for: .reminder).map {
@@ -119,7 +121,7 @@ final class EventKitRemindersService: RemindersService {
         }
     }
 
-    func fetchReminders(for kind: ExportTarget.Kind) async throws -> [ReminderItem] {
+    public func fetchReminders(for kind: ExportTarget.Kind) async throws -> [ReminderItem] {
         let granted = try await store.requestFullAccessToReminders()
         guard granted else { throw RemindersError.accessDenied }
 

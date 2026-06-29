@@ -6,6 +6,10 @@
 	objectVersion = 110;
 	objects = {
 
+/* Begin PBXBuildFile section */
+		B5316FAC2FF2AE4E008A96E1 /* EasyReminderKit in Frameworks */ = {isa = PBXBuildFile; productRef = B5316FAB2FF2AE4E008A96E1 /* EasyReminderKit */; };
+/* End PBXBuildFile section */
+
 /* Begin PBXFileReference section */
 		B5942C2B2FEA3ADB00D32611 /* EasyReminder.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = EasyReminder.app; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
@@ -22,6 +26,7 @@
 		B5942C282FEA3ADB00D32611 /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			files = (
+				B5316FAC2FF2AE4E008A96E1 /* EasyReminderKit in Frameworks */,
 			);
 		};
 /* End PBXFrameworksBuildPhase section */
@@ -60,6 +65,9 @@
 				B5942C2D2FEA3ADB00D32611 /* EasyReminder */,
 			);
 			name = EasyReminder;
+			packageProductDependencies = (
+				B5316FAB2FF2AE4E008A96E1 /* EasyReminderKit */,
+			);
 			productName = EasyReminder;
 			productReference = B5942C2B2FEA3ADB00D32611 /* EasyReminder.app */;
 			productType = "com.apple.product-type.application";
@@ -88,6 +96,9 @@
 			);
 			mainGroup = B5942C222FEA3ADB00D32611;
 			minimizedProjectReferenceProxies = 1;
+			packageReferences = (
+				B5316FAA2FF2AE4E008A96E1 /* XCLocalSwiftPackageReference "EasyReminderKit" */,
+			);
 			preferredProjectObjectVersion = 77;
 			productRefGroup = B5942C2C2FEA3ADB00D32611 /* Products */;
 			projectDirPath = "";
@@ -349,6 +360,20 @@
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
+
+/* Begin XCLocalSwiftPackageReference section */
+		B5316FAA2FF2AE4E008A96E1 /* XCLocalSwiftPackageReference "EasyReminderKit" */ = {
+			isa = XCLocalSwiftPackageReference;
+			relativePath = EasyReminderKit;
+		};
+/* End XCLocalSwiftPackageReference section */
+
+/* Begin XCSwiftPackageProductDependency section */
+		B5316FAB2FF2AE4E008A96E1 /* EasyReminderKit */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = EasyReminderKit;
+		};
+/* End XCSwiftPackageProductDependency section */
 	};
 	rootObject = B5942C232FEA3ADB00D32611 /* Project object */;
 	validationLevel = 1;

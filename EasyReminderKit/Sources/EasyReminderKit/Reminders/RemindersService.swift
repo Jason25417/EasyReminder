@@ -1,6 +1,6 @@
 import Foundation
 
-protocol RemindersService {
+public protocol RemindersService {
     func requestAccess() async throws -> Bool
     func addTestReminder(title: String) async throws
     /// 把若干条目导入提醒事项；listName 为空则用默认列表，否则找/建同名列表。返回成功条数。
@@ -11,7 +11,7 @@ protocol RemindersService {
     func fetchReminders(for kind: ExportTarget.Kind) async throws -> [ReminderItem]
 }
 
-enum RemindersError: Error {
+public enum RemindersError: Error {
     case accessDenied      // 用户拒绝授权
     case noDefaultList     // 没有可用的默认提醒列表
 }
