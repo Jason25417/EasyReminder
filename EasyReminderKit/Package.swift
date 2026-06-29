@@ -9,5 +9,6 @@ let package = Package(
     ],
     targets: [
         .target(name: "EasyReminderKit"),
+        .testTarget(name: "EasyReminderKitTests", dependencies: ["EasyReminderKit"]),
     ]
 )
