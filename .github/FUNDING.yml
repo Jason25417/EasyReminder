@@ -1,0 +1,3 @@
+# GitHub reads this file and shows a "Sponsor" button on the repo.
+# afdian (爱发电) is not a built-in platform, so it goes under `custom` as a plain URL.
+custom: ["https://afdian.com/a/Jason25417"]

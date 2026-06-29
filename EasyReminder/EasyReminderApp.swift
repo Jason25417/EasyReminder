@@ -7,7 +7,8 @@ struct EasyReminderApp: App {
     var body: some Scene {
         WindowGroup {
             RootView(importVM: ImportViewModel(service: remindersService),
-                     exportVM: ExportViewModel(service: remindersService))
+                     exportVM: ExportViewModel(service: remindersService),
+                     updateVM: UpdateViewModel(service: GitHubUpdateService()))
         }
     }
 }
