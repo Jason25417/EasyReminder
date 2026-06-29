@@ -65,26 +65,32 @@ struct ExportView: View {
     }
 
     private var itemList: some View {
-        ScrollView {
-            LazyVStack(alignment: .leading, spacing: 0) {
-                ForEach(viewModel.items) { item in
-                    HStack(alignment: .top, spacing: 8) {
-                        Image(systemName: viewModel.selectedItemIDs.contains(item.id)
-                              ? "checkmark.circle.fill" : "circle")
-                            .foregroundStyle(viewModel.selectedItemIDs.contains(item.id) ? .blue : .secondary)
-                        VStack(alignment: .leading, spacing: 2) {
-                            Text(item.title).lineLimit(1)
-                            if let due = item.dueDate {
-                                Text(Self.dateText(due)).font(.caption).foregroundStyle(.secondary)
+        Group {
+            if viewModel.items.isEmpty {
+                ContentUnavailableView("这个列表没有提醒", systemImage: "tray")
+            } else {
+                ScrollView {
+                    LazyVStack(alignment: .leading, spacing: 0) {
+                        ForEach(viewModel.items) { item in
+                            HStack(alignment: .top, spacing: 8) {
+                                Image(systemName: viewModel.selectedItemIDs.contains(item.id)
+                                      ? "checkmark.circle.fill" : "circle")
+                                    .foregroundStyle(viewModel.selectedItemIDs.contains(item.id) ? .blue : .secondary)
+                                VStack(alignment: .leading, spacing: 2) {
+                                    Text(item.title).lineLimit(1)
+                                    if let due = item.dueDate {
+                                        Text(Self.dateText(due)).font(.caption).foregroundStyle(.secondary)
+                                    }
+                                }
+                                Spacer()
                             }
+                            .padding(.vertical, 5)
+                            .padding(.horizontal, 6)
+                            .contentShape(Rectangle())
+                            .onTapGesture { viewModel.toggle(item.id) }
+                            Divider()
                         }
-                        Spacer()
                     }
-                    .padding(.vertical, 5)
-                    .padding(.horizontal, 6)
-                    .contentShape(Rectangle())
-                    .onTapGesture { viewModel.toggle(item.id) }
-                    Divider()
                 }
             }
         }

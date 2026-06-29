@@ -61,6 +61,12 @@
         "es" : { "stringUnit" : { "state" : "translated", "value" : "Seleccionar todo" } }
       }
     },
+    "这个列表没有提醒" : {
+      "localizations" : {
+        "en" : { "stringUnit" : { "state" : "translated", "value" : "No reminders in this list" } },
+        "es" : { "stringUnit" : { "state" : "translated", "value" : "No hay recordatorios en esta lista" } }
+      }
+    },
     "导出为 ICS…" : {
       "localizations" : {
         "en" : { "stringUnit" : { "state" : "translated", "value" : "Export as ICS…" } },
