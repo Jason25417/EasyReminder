@@ -12,7 +12,7 @@ final class ImportViewModel {
         case newList            // 新建列表（名字见 newListName）
     }
 
-    var status: String = "请选择一个或多个 .ics 文件导入，或用本 App 打开 .ics 文件"
+    var status: String = String(localized: "请选择一个或多个 .ics 文件导入，或用本 App 打开 .ics 文件")
 
     // 列表选择弹框相关
     var availableLists: [ExportTarget] = []
@@ -72,20 +72,25 @@ final class ImportViewModel {
                 allItems.append(contentsOf: parser.parse(text))
             }
             guard !allItems.isEmpty else {
-                status = "没解析到任何 VTODO 条目（共 \(urls.count) 个文件）"
+                status = String(localized: "没解析到任何 VTODO 条目（共 \(urls.count) 个文件）")
                 return
             }
             let count = try await service.importReminders(allItems, intoListNamed: listName)
-            let fileNote = urls.count > 1 ? "（来自 \(urls.count) 个文件）" : ""
-            var message = "成功导入 \(count) 条\(fileNote)" + (listName == nil ? "（默认列表）" : "（列表：\(listName!)）")
-            if let note = Self.ignoredSummary(allItems) { message += "\n" + note }
-            status = message
+            var lines: [String] = []
+            if let listName {
+                lines.append(String(localized: "成功导入 \(count) 条到列表「\(listName)」"))
+            } else {
+                lines.append(String(localized: "成功导入 \(count) 条到默认列表"))
+            }
+            if urls.count > 1 { lines.append(String(localized: "（共 \(urls.count) 个文件）")) }
+            if let note = Self.ignoredSummary(allItems) { lines.append(note) }
+            status = lines.joined(separator: "\n")
         } catch RemindersError.accessDenied {
-            status = "失败：提醒事项权限被拒绝"
+            status = String(localized: "失败：提醒事项权限被拒绝")
         } catch RemindersError.noDefaultList {
-            status = "失败：没有可用的提醒列表，请先在提醒事项里建一个列表"
+            status = String(localized: "失败：没有可用的提醒列表，请先在提醒事项里建一个列表")
         } catch {
-            status = "失败：\(error.localizedDescription)"
+            status = String(localized: "失败：\(error.localizedDescription)")
         }
     }
 
@@ -102,9 +107,10 @@ final class ImportViewModel {
             }
         }
         var parts: [String] = []
-        if subtasks > 0    { parts.append("\(subtasks) 个子任务") }
-        if tags > 0        { parts.append("\(tags) 个标签") }
-        if attachments > 0 { parts.append("\(attachments) 个附件") }
-        return "注意：\(affected.count) 条含本 App 写不进的字段（\(parts.joined(separator: "、"))），已忽略"
+        if subtasks > 0    { parts.append(String(localized: "\(subtasks) 个子任务")) }
+        if tags > 0        { parts.append(String(localized: "\(tags) 个标签")) }
+        if attachments > 0 { parts.append(String(localized: "\(attachments) 个附件")) }
+        let detail = parts.joined(separator: String(localized: "、"))
+        return String(localized: "注意：\(affected.count) 条含本 App 写不进的字段（\(detail)），已忽略")
     }
 }

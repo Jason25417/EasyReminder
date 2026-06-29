@@ -91,11 +91,13 @@
 				};
 			};
 			buildConfigurationList = B5942C262FEA3ADB00D32611 /* Build configuration list for PBXProject "EasyReminder" */;
-			developmentRegion = en;
+			developmentRegion = "zh-Hans";
 			hasScannedForEncodings = 0;
 			knownRegions = (
 				en,
 				Base,
+				"zh-Hans",
+				es,
 			);
 			mainGroup = B5942C222FEA3ADB00D32611;
 			minimizedProjectReferenceProxies = 1;

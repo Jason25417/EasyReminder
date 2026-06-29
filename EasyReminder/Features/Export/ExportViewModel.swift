@@ -11,7 +11,7 @@ final class ExportViewModel {
     var items: [ReminderItem] = []
     var selectedItemIDs: Set<UUID> = []
 
-    var status: String = "选择要导出的列表"
+    var status: String = String(localized: "选择要导出的列表")
     var document: ICSDocument?
     var showingExporter = false
     var suggestedName = "reminders"
@@ -26,19 +26,19 @@ final class ExportViewModel {
     func load() async {
         do {
             var t: [ExportTarget] = [
-                ExportTarget(id: "smart.all", title: "全部（所有列表）", kind: .all),
-                ExportTarget(id: "smart.today", title: "今天", kind: .today),
-                ExportTarget(id: "smart.scheduled", title: "计划", kind: .scheduled),
-                ExportTarget(id: "smart.completed", title: "完成", kind: .completed),
+                ExportTarget(id: "smart.all", title: String(localized: "全部（所有列表）"), kind: .all),
+                ExportTarget(id: "smart.today", title: String(localized: "今天"), kind: .today),
+                ExportTarget(id: "smart.scheduled", title: String(localized: "计划"), kind: .scheduled),
+                ExportTarget(id: "smart.completed", title: String(localized: "已完成"), kind: .completed),
             ]
             t.append(contentsOf: try await service.fetchLists())
             targets = t
             if selectedID == nil { selectedID = t.first?.id }
             await loadItems()
         } catch RemindersError.accessDenied {
-            status = "提醒事项权限被拒绝"
+            status = String(localized: "提醒事项权限被拒绝")
         } catch {
-            status = "加载列表失败：\(error.localizedDescription)"
+            status = String(localized: "加载列表失败：\(error.localizedDescription)")
         }
     }
 
@@ -51,10 +51,12 @@ final class ExportViewModel {
             let fetched = try await service.fetchReminders(for: target.kind)
             items = fetched
             selectedItemIDs = Set(fetched.map(\.id))
-            status = fetched.isEmpty ? "「\(target.title)」里没有条目" : "共 \(fetched.count) 条，默认全选"
+            status = fetched.isEmpty
+                ? String(localized: "「\(target.title)」里没有条目")
+                : String(localized: "共 \(fetched.count) 条，默认全选")
         } catch {
             items = []; selectedItemIDs = []
-            status = "读取条目失败：\(error.localizedDescription)"
+            status = String(localized: "读取条目失败：\(error.localizedDescription)")
         }
     }
 
@@ -69,22 +71,22 @@ final class ExportViewModel {
 
     func prepareExport() async {
         guard let id = selectedID, let target = targets.first(where: { $0.id == id }) else {
-            status = "请先选择一个列表"; return
+            status = String(localized: "请先选择一个列表"); return
         }
         let chosen = items.filter { selectedItemIDs.contains($0.id) }
         guard !chosen.isEmpty else {
-            status = "请至少勾选一条要导出的项目"; return
+            status = String(localized: "请至少勾选一条要导出的项目"); return
         }
         document = ICSDocument(text: exporter.export(chosen))
         suggestedName = sanitize(target.title)
         showingExporter = true
-        status = "已准备好 \(chosen.count) 条，请选择保存位置"
+        status = String(localized: "已准备好 \(chosen.count) 条，请选择保存位置")
     }
 
     func exportCompleted(_ result: Result<URL, Error>) {
         switch result {
-        case .success(let url): status = "已导出到：\(url.lastPathComponent)"
-        case .failure(let e):   status = "保存失败：\(e.localizedDescription)"
+        case .success(let url): status = String(localized: "已导出到：\(url.lastPathComponent)")
+        case .failure(let e):   status = String(localized: "保存失败：\(e.localizedDescription)")
         }
         document = nil
     }
