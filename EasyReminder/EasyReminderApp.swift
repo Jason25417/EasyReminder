@@ -11,7 +11,7 @@ struct EasyReminderApp: App {
         WindowGroup {
             RootView(importVM: ImportViewModel(service: remindersService),
                      exportVM: ExportViewModel(service: remindersService),
-                     updateVM: UpdateViewModel(service: GitHubUpdateService()))
+                     updater: updaterController.updater)
         }
         .commands {
             CommandGroup(after: .appInfo) {

@@ -1,12 +1,14 @@
 import SwiftUI
+import Sparkle
 
 struct RootView: View {
     let importVM: ImportViewModel
     let exportVM: ExportViewModel
-    let updateVM: UpdateViewModel
+    let updater: SPUUpdater
 
-    @Environment(\.openURL) private var openURL
     @State private var showingChangelog = false
+
+    private let latestReleaseURL = URL(string: "https://github.com/Jason25417/EasyReminder/releases/latest")!
 
     var body: some View {
         VStack(spacing: 0) {
@@ -19,16 +21,16 @@ struct RootView: View {
 
             Divider()
 
-            HStack(spacing: 4) {
+            HStack(spacing: 12) {
                 Text(AppInfo.copyright)
                 Button("v\(AppInfo.version)") { showingChangelog = true }
                     .buttonStyle(.link)
                     .help("查看更新日志")
-                if let v = updateVM.availableVersion, let url = updateVM.releaseURL {
-                    Button("有新版 v\(v) ↗") { openURL(url) }
-                        .buttonStyle(.link)
-                        .help("打开下载页")
-                }
+                Button("检查更新…") { updater.checkForUpdates() }
+                    .buttonStyle(.link)
+                    .help("检查并安装新版本")
+                Link("GitHub", destination: latestReleaseURL)
+                    .help("在 GitHub 查看最新版本")
                 Spacer()
             }
             .font(.caption)
@@ -37,7 +39,6 @@ struct RootView: View {
             .padding(.vertical, 6)
         }
         .frame(minWidth: 520, minHeight: 420)
-        .task { await updateVM.check() }
         .sheet(isPresented: $showingChangelog) { ChangelogView() }
     }
 }
