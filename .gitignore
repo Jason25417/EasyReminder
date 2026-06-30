@@ -13,3 +13,6 @@ xcuserdata/
 # Swift Package Manager
 .build/
 .swiftpm/
+
+# 发版公证凭证（机密，勿入库）
+scripts/release.local.sh
