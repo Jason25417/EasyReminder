@@ -103,6 +103,42 @@
         "es" : { "stringUnit" : { "state" : "translated", "value" : "Cancelar" } }
       }
     },
+    "已取消导入" : {
+      "localizations" : {
+        "en" : { "stringUnit" : { "state" : "translated", "value" : "Import canceled" } },
+        "es" : { "stringUnit" : { "state" : "translated", "value" : "Importación cancelada" } }
+      }
+    },
+    "没有要导入的条目" : {
+      "localizations" : {
+        "en" : { "stringUnit" : { "state" : "translated", "value" : "Nothing to import" } },
+        "es" : { "stringUnit" : { "state" : "translated", "value" : "Nada que importar" } }
+      }
+    },
+    "检测到重复导入" : {
+      "localizations" : {
+        "en" : { "stringUnit" : { "state" : "translated", "value" : "Duplicate import detected" } },
+        "es" : { "stringUnit" : { "state" : "translated", "value" : "Importación duplicada detectada" } }
+      }
+    },
+    "有 %lld 条之前导入过。" : {
+      "localizations" : {
+        "en" : { "stringUnit" : { "state" : "translated", "value" : "%lld item(s) were imported before." } },
+        "es" : { "stringUnit" : { "state" : "translated", "value" : "%lld elemento(s) ya se importaron antes." } }
+      }
+    },
+    "全部导入" : {
+      "localizations" : {
+        "en" : { "stringUnit" : { "state" : "translated", "value" : "Import all" } },
+        "es" : { "stringUnit" : { "state" : "translated", "value" : "Importar todo" } }
+      }
+    },
+    "只导入新的 %lld 条" : {
+      "localizations" : {
+        "en" : { "stringUnit" : { "state" : "translated", "value" : "Import only %lld new" } },
+        "es" : { "stringUnit" : { "state" : "translated", "value" : "Importar solo %lld nuevos" } }
+      }
+    },
     "检查更新…" : {
       "localizations" : {
         "en" : { "stringUnit" : { "state" : "translated", "value" : "Check for Updates…" } },
