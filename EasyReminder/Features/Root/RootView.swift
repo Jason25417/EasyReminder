@@ -1,10 +1,8 @@
 import SwiftUI
-import Sparkle
 
 struct RootView: View {
     let importVM: ImportViewModel
     let exportVM: ExportViewModel
-    let updater: SPUUpdater
 
     @State private var showingChangelog = false
 
@@ -26,9 +24,6 @@ struct RootView: View {
                 Button("v\(AppInfo.version)") { showingChangelog = true }
                     .buttonStyle(.link)
                     .help("查看更新日志")
-                Button("检查更新…") { updater.checkForUpdates() }
-                    .buttonStyle(.link)
-                    .help("检查并安装新版本")
                 Link("GitHub", destination: latestReleaseURL)
                     .help("在 GitHub 查看最新版本")
                 Spacer()
