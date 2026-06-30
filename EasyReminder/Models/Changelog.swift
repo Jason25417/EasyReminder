@@ -20,6 +20,10 @@ struct ChangelogEntry: Identifiable {
 /// 更新日志：以后每发一版，在最前面加一条。
 enum Changelog {
     static let entries: [ChangelogEntry] = [
+        ChangelogEntry(version: "1.4", date: "2026-06", changes: [
+            "新增「快捷指令」支持：导入 ICS、导出 ICS（可在快捷指令/自动化里调用）",
+            "开源仓库附带命令行工具 easyreminder",
+        ]),
         ChangelogEntry(version: "1.3", date: "2026-06", changes: [
             "导入查重：重复导入时可选「全部导入 / 只导入新的」",
             "信息栏新增「检查更新」按钮与 GitHub 链接",
