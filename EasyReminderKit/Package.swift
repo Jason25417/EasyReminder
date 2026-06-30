@@ -6,9 +6,11 @@ let package = Package(
     platforms: [.macOS(.v14)],
     products: [
         .library(name: "EasyReminderKit", targets: ["EasyReminderKit"]),
+        .executable(name: "easyreminder", targets: ["EasyReminderCLI"]),
     ],
     targets: [
         .target(name: "EasyReminderKit"),
+        .executableTarget(name: "EasyReminderCLI", dependencies: ["EasyReminderKit"]),
         .testTarget(name: "EasyReminderKitTests", dependencies: ["EasyReminderKit"]),
     ]
 )
