@@ -28,6 +28,8 @@ struct ChangelogView: View {
             }
         }
         .padding(20)
+        #if os(macOS)
         .frame(width: 440, height: 380)
+        #endif
     }
 }
