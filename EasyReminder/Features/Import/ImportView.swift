@@ -23,7 +23,9 @@ struct ImportView: View {
                 .fixedSize(horizontal: false, vertical: true)
         }
         .padding(40)
+        #if os(macOS)
         .frame(minWidth: 440, minHeight: 240)
+        #endif
         .fileImporter(isPresented: $showingPicker,
                       allowedContentTypes: Self.icsTypes,
                       allowsMultipleSelection: true) { result in

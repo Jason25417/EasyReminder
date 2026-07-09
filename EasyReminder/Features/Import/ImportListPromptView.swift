@@ -35,6 +35,8 @@ struct ImportListPromptView: View {
             }
         }
         .padding(20)
+        #if os(macOS)
         .frame(width: 380)
+        #endif
     }
 }

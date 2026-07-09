@@ -28,7 +28,9 @@ struct RootView: View {
             HStack(spacing: 12) {
                 Text(AppInfo.copyright)
                 Button("v\(AppInfo.version)") { showingChangelog = true }
+                    #if os(macOS)
                     .buttonStyle(.link)
+                    #endif
                     .help("查看更新日志")
                 #if canImport(Sparkle)
                 Button("检查更新…") { updater.checkForUpdates() }
@@ -44,7 +46,9 @@ struct RootView: View {
             .padding(.horizontal, 12)
             .padding(.vertical, 6)
         }
+        #if os(macOS)
         .frame(minWidth: 520, minHeight: 420)
+        #endif
         .sheet(isPresented: $showingChangelog) { ChangelogView() }
     }
 }
