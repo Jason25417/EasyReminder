@@ -1,3 +1,4 @@
+#if canImport(Sparkle)
 import SwiftUI
 import Combine
 import Sparkle
@@ -27,3 +28,4 @@ struct CheckForUpdatesView: View {
             .disabled(!viewModel.canCheckForUpdates)
     }
 }
+#endif
