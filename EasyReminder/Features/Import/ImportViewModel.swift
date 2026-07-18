@@ -4,12 +4,19 @@ import EasyReminderKit
 
 /// 一次导入完成后的摘要（弹窗展示导入了什么）。
 struct ImportSummary: Identifiable {
+    struct DetailRow: Identifiable {
+        let id = UUID()
+        let label: String
+        let value: String
+    }
     struct Entry: Identifiable {
         let id = UUID()
         let isEvent: Bool          // true=日历事件 false=待办
         let title: String
-        let dateText: String?
-        let detail: String?        // 地点 / 提醒 / 重复等
+        let subtitle: String?      // 列表行第二行（截止/时间段）
+        let monthText: String?     // 事件迷你日历块：月
+        let dayText: String?       // 事件迷你日历块：日
+        let detailRows: [DetailRow]// 点开后的完整字段
     }
     let id = UUID()
     let headline: String           // "23 条待办 → 列表「课程」；4 个事件 → 日历「学校」"
@@ -185,7 +192,7 @@ final class ImportViewModel {
                 record(content.todos.compactMap(\.uid))
                 let dest = listName.map { String(localized: "列表「\($0)」") } ?? String(localized: "默认列表")
                 headParts.append(String(localized: "\(count) 条待办 → \(dest)"))
-                entries += content.todos.map(Self.entry(for:))
+                entries += content.todos.map { Self.entry(for: $0, destination: dest) }
             } catch RemindersError.accessDenied {
                 lines.append(String(localized: "待办失败：提醒事项权限被拒绝"))
             } catch RemindersError.noDefaultList {
@@ -202,7 +209,7 @@ final class ImportViewModel {
                 record(content.events.compactMap(\.uid))
                 let dest = calendarName.map { String(localized: "日历「\($0)」") } ?? String(localized: "默认日历")
                 headParts.append(String(localized: "\(count) 个事件 → \(dest)"))
-                entries += content.events.map(Self.entry(for:))
+                entries += content.events.map { Self.entry(for: $0, destination: dest) }
             } catch CalendarError.accessDenied {
                 lines.append(String(localized: "事件失败：日历权限被拒绝"))
             } catch CalendarError.noDefaultCalendar {
@@ -224,38 +231,96 @@ final class ImportViewModel {
 
     // MARK: - 摘要条目
 
-    private static func entry(for item: ReminderItem) -> ImportSummary.Entry {
-        var parts: [String] = []
-        if item.isCompleted { parts.append(String(localized: "已完成")) }
-        if !item.alarms.isEmpty { parts.append(String(localized: "提醒×\(item.alarms.count)")) }
-        if let r = item.recurrence { parts.append(Self.recurrenceText(r)) }
-        if item.url != nil { parts.append(String(localized: "网址")) }
+    private static func entry(for item: ReminderItem, destination: String) -> ImportSummary.Entry {
+        var rows: [ImportSummary.DetailRow] = []
+        rows.append(.init(label: String(localized: "类型"), value: String(localized: "待办")))
+        if let d = item.dueDate { rows.append(.init(label: String(localized: "截止"), value: dateText(d))) }
+        if let s = item.startDate { rows.append(.init(label: String(localized: "开始"), value: dateText(s))) }
+        if let p = priorityText(item.priority) { rows.append(.init(label: String(localized: "优先级"), value: p)) }
+        if item.isCompleted { rows.append(.init(label: String(localized: "状态"), value: String(localized: "已完成"))) }
+        if !item.alarms.isEmpty {
+            rows.append(.init(label: String(localized: "提醒"),
+                              value: item.alarms.map(alarmText).joined(separator: String(localized: "、"))))
+        }
+        if let r = item.recurrence { rows.append(.init(label: String(localized: "重复"), value: recurrenceText(r))) }
+        if let u = item.url { rows.append(.init(label: String(localized: "网址"), value: u.absoluteString)) }
+        if let n = item.notes, !n.isEmpty { rows.append(.init(label: String(localized: "备注"), value: n)) }
+        rows.append(.init(label: String(localized: "去向"), value: destination))
+
         return .init(isEvent: false,
                      title: item.title,
-                     dateText: item.dueDate.map(Self.dateText),
-                     detail: parts.isEmpty ? nil : parts.joined(separator: " · "))
+                     subtitle: item.dueDate.map { String(localized: "\(dateText($0)) 截止") },
+                     monthText: nil, dayText: nil,
+                     detailRows: rows)
     }
 
-    private static func entry(for item: EventItem) -> ImportSummary.Entry {
-        var parts: [String] = []
-        if let loc = item.location, !loc.isEmpty { parts.append(loc) }
-        if item.isAllDay { parts.append(String(localized: "全天")) }
-        if !item.alarms.isEmpty { parts.append(String(localized: "提醒×\(item.alarms.count)")) }
-        if let r = item.recurrence { parts.append(Self.recurrenceText(r)) }
-        var dateText: String?
+    private static func entry(for item: EventItem, destination: String) -> ImportSummary.Entry {
+        var rows: [ImportSummary.DetailRow] = []
+        rows.append(.init(label: String(localized: "类型"),
+                          value: item.isAllDay ? String(localized: "日历事件（全天）") : String(localized: "日历事件")))
+        var subtitle: String?
         if let start = item.startDate {
             if item.isAllDay {
-                dateText = Self.dayText(start)
+                rows.append(.init(label: String(localized: "日期"), value: dayText(start)))
+                subtitle = String(localized: "全天")
             } else if let end = item.endDate {
-                dateText = "\(Self.dateText(start)) – \(Self.timeText(end))"
+                rows.append(.init(label: String(localized: "时间"), value: "\(dateText(start)) – \(timeText(end))"))
+                subtitle = "\(timeText(start)) – \(timeText(end))"
             } else {
-                dateText = Self.dateText(start)
+                rows.append(.init(label: String(localized: "时间"), value: dateText(start)))
+                subtitle = timeText(start)
             }
+        }
+        if let loc = item.location, !loc.isEmpty { rows.append(.init(label: String(localized: "地点"), value: loc)) }
+        if !item.alarms.isEmpty {
+            rows.append(.init(label: String(localized: "提醒"),
+                              value: item.alarms.map(alarmText).joined(separator: String(localized: "、"))))
+        }
+        if let r = item.recurrence {
+            rows.append(.init(label: String(localized: "重复"), value: recurrenceText(r)))
+            if let sub = subtitle { subtitle = "\(sub) · \(recurrenceText(r))" }
+        }
+        if let u = item.url { rows.append(.init(label: String(localized: "网址"), value: u.absoluteString)) }
+        if let n = item.notes, !n.isEmpty { rows.append(.init(label: String(localized: "备注"), value: n)) }
+        rows.append(.init(label: String(localized: "去向"), value: destination))
+
+        var month: String?, day: String?
+        if let start = item.startDate {
+            let mf = DateFormatter(); mf.setLocalizedDateFormatFromTemplate("MMM")
+            let df = DateFormatter(); df.setLocalizedDateFormatFromTemplate("d")
+            month = mf.string(from: start); day = df.string(from: start)
         }
         return .init(isEvent: true,
                      title: item.title,
-                     dateText: dateText,
-                     detail: parts.isEmpty ? nil : parts.joined(separator: " · "))
+                     subtitle: subtitle,
+                     monthText: month, dayText: day,
+                     detailRows: rows)
+    }
+
+    private static func alarmText(_ a: ReminderAlarm) -> String {
+        switch a {
+        case .relative(let off):
+            if off == 0 { return String(localized: "准时") }
+            let mins = Int(abs(off)) / 60
+            let span: String
+            if mins >= 1440, mins % 1440 == 0 { span = String(localized: "\(mins / 1440) 天") }
+            else if mins >= 60, mins % 60 == 0 { span = String(localized: "\(mins / 60) 小时") }
+            else { span = String(localized: "\(mins) 分钟") }
+            return off < 0 ? String(localized: "提前 \(span)") : String(localized: "延后 \(span)")
+        case .absolute(let d):
+            return dateText(d)
+        case .location(let loc):
+            return loc.onArrival ? String(localized: "到达「\(loc.title)」时") : String(localized: "离开「\(loc.title)」时")
+        }
+    }
+
+    private static func priorityText(_ p: Int) -> String? {
+        switch p {
+        case 1...4: return String(localized: "高")
+        case 5:     return String(localized: "中")
+        case 6...9: return String(localized: "低")
+        default:    return nil
+        }
     }
 
     private static func recurrenceText(_ r: RecurrenceRule) -> String {
