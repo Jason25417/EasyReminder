@@ -34,11 +34,18 @@ public struct ICSParser {
         }
     }
 
+    /// 兼容旧接口：只取 VTODO。
     public func parse(_ text: String) -> [ReminderItem] {
-        let lines = unfold(text)
-        var items: [ReminderItem] = []
+        parseContent(text).todos
+    }
 
-        var todo: Props?
+    /// 完整解析：VTODO → todos，VEVENT → events。
+    public func parseContent(_ text: String) -> ICSContent {
+        let lines = unfold(text)
+        var content = ICSContent()
+
+        var block: Props?           // 当前 VTODO / VEVENT 的属性
+        var blockIsEvent = false
         var alarms: [Props] = []
         var alarm: Props?
         var ignored = IgnoredCounter()
@@ -47,30 +54,37 @@ public struct ICSParser {
             let trimmed = line.trimmingCharacters(in: .whitespaces)
             switch trimmed {
             case "BEGIN:VTODO":
-                todo = [:]; alarms = []; alarm = nil; ignored = IgnoredCounter()
+                block = [:]; blockIsEvent = false; alarms = []; alarm = nil; ignored = IgnoredCounter()
+            case "BEGIN:VEVENT":
+                block = [:]; blockIsEvent = true; alarms = []; alarm = nil
             case "BEGIN:VALARM":
                 alarm = [:]
             case "END:VALARM":
                 if let a = alarm { alarms.append(a) }
                 alarm = nil
             case "END:VTODO":
-                if let t = todo {
+                if let t = block, !blockIsEvent {
                     var item = makeItem(from: t, alarmBlocks: alarms)
                     item.ignoredFields = ignored.fields()
-                    items.append(item)
+                    content.todos.append(item)
                 }
-                todo = nil; alarms = []
+                block = nil; alarms = []
+            case "END:VEVENT":
+                if let e = block, blockIsEvent {
+                    content.events.append(makeEvent(from: e, alarmBlocks: alarms))
+                }
+                block = nil; alarms = []
             default:
                 guard let (name, params, value) = parseProperty(line) else { continue }
                 if alarm != nil {
                     alarm?[name] = (params, value)
-                } else if todo != nil {
-                    todo?[name] = (params, value)
-                    ignored.note(property: name, value: value)
+                } else if block != nil {
+                    block?[name] = (params, value)
+                    if !blockIsEvent { ignored.note(property: name, value: value) }
                 }
             }
         }
-        return items
+        return content
     }
 
     // MARK: - 行展开
@@ -130,6 +144,32 @@ public struct ICSParser {
                             startDate: startDate, priority: priority,
                             isCompleted: isCompleted, url: url, uid: uid,
                             alarms: alarms, recurrence: recurrence)
+    }
+
+    // MARK: - 组装 EventItem
+
+    private func makeEvent(from props: Props, alarmBlocks: [Props]) -> EventItem {
+        let title = props["SUMMARY"]?.value ?? "(无标题)"
+        let notes = props["DESCRIPTION"]?.value
+        let location = props["LOCATION"]?.value
+        let url = props["URL"].flatMap { URL(string: $0.value) }
+        let uid = props["UID"]?.value
+        let start = props["DTSTART"].flatMap { parseDate($0.value, params: $0.params) }
+        // 全天：DTSTART 是 VALUE=DATE（或 8 位纯日期）
+        let isAllDay = props["DTSTART"].map {
+            $0.params["VALUE"] == "DATE" || $0.value.count == 8
+        } ?? false
+        // 结束：DTEND 优先；否则 DTSTART + DURATION
+        var end = props["DTEND"].flatMap { parseDate($0.value, params: $0.params) }
+        if end == nil, let start, let dur = props["DURATION"].flatMap({ parseDuration($0.value) }) {
+            end = start.addingTimeInterval(dur)
+        }
+        let recurrence = props["RRULE"].flatMap { parseRecurrence($0.value) }
+        let alarms = alarmBlocks.compactMap { parseAlarm($0) }
+
+        return EventItem(title: title, notes: notes, location: location,
+                         startDate: start, endDate: end, isAllDay: isAllDay,
+                         url: url, uid: uid, alarms: alarms, recurrence: recurrence)
     }
 
     // MARK: - 日期
