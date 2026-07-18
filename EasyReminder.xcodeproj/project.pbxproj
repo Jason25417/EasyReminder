@@ -282,6 +282,7 @@
 				INFOPLIST_FILE = Info.plist;
 				INFOPLIST_KEY_CFBundleDisplayName = EasyReminder;
 				INFOPLIST_KEY_NSHumanReadableCopyright = "";
+				INFOPLIST_KEY_NSCalendarsFullAccessUsageDescription = "用于把导入的 ICS 事件（VEVENT）写入你的日历。";
 				INFOPLIST_KEY_NSRemindersFullAccessUsageDescription = "用于把导入的待办写入你的提醒事项，以及将提醒导出为 ICS 文件。";
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
@@ -329,6 +330,7 @@
 				INFOPLIST_FILE = Info.plist;
 				INFOPLIST_KEY_CFBundleDisplayName = EasyReminder;
 				INFOPLIST_KEY_NSHumanReadableCopyright = "";
+				INFOPLIST_KEY_NSCalendarsFullAccessUsageDescription = "用于把导入的 ICS 事件（VEVENT）写入你的日历。";
 				INFOPLIST_KEY_NSRemindersFullAccessUsageDescription = "用于把导入的待办写入你的提醒事项，以及将提醒导出为 ICS 文件。";
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",

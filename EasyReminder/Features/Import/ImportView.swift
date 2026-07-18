@@ -42,6 +42,9 @@ struct ImportView: View {
         .sheet(isPresented: $viewModel.showingListPrompt) {
             ImportListPromptView(viewModel: viewModel)
         }
+        .sheet(item: $viewModel.importSummary) { summary in
+            ImportSummaryView(summary: summary)
+        }
         .confirmationDialog("检测到重复导入", isPresented: $viewModel.showingDuplicatePrompt, titleVisibility: .visible) {
             Button("全部导入") { Task { await viewModel.resolveDuplicate(importAll: true) } }
             Button("只导入新的 \(viewModel.newCount) 条") { Task { await viewModel.resolveDuplicate(importAll: false) } }
