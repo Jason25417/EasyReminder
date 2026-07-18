@@ -45,8 +45,8 @@ public final class EventKitRemindersService: RemindersService {
             reminder.url = item.url
             if let due = item.dueDate { reminder.dueDateComponents = components(from: due) }
             if let start = item.startDate { reminder.startDateComponents = components(from: start) }
-            for alarm in item.alarms { reminder.addAlarm(makeAlarm(alarm)) }
-            if let rule = item.recurrence { reminder.addRecurrenceRule(makeRecurrence(rule)) }
+            for alarm in item.alarms { reminder.addAlarm(EventKitMapping.alarm(alarm)) }
+            if let rule = item.recurrence { reminder.addRecurrenceRule(EventKitMapping.recurrence(rule)) }
             try store.save(reminder, commit: false)
             count += 1
         }
@@ -77,37 +77,6 @@ public final class EventKitRemindersService: RemindersService {
 
     private func components(from date: Date) -> DateComponents {
         Calendar.current.dateComponents([.year, .month, .day, .hour, .minute, .second], from: date)
-    }
-
-    private func makeAlarm(_ alarm: ReminderAlarm) -> EKAlarm {
-        switch alarm {
-        case .relative(let offset):
-            return EKAlarm(relativeOffset: offset)
-        case .absolute(let date):
-            return EKAlarm(absoluteDate: date)
-        case .location(let loc):
-            let a = EKAlarm()
-            let structured = EKStructuredLocation(title: loc.title)
-            structured.geoLocation = CLLocation(latitude: loc.latitude, longitude: loc.longitude)
-            structured.radius = loc.radius
-            a.structuredLocation = structured
-            a.proximity = loc.onArrival ? .enter : .leave
-            return a
-        }
-    }
-
-    private func makeRecurrence(_ rule: RecurrenceRule) -> EKRecurrenceRule {
-        let freq: EKRecurrenceFrequency
-        switch rule.frequency {
-        case .daily:   freq = .daily
-        case .weekly:  freq = .weekly
-        case .monthly: freq = .monthly
-        case .yearly:  freq = .yearly
-        }
-        var end: EKRecurrenceEnd?
-        if let c = rule.count { end = EKRecurrenceEnd(occurrenceCount: c) }
-        else if let u = rule.until { end = EKRecurrenceEnd(end: u) }
-        return EKRecurrenceRule(recurrenceWith: freq, interval: max(1, rule.interval), end: end)
     }
 
     // MARK: - 导出：读取
