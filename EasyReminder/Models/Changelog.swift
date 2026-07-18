@@ -20,6 +20,12 @@ struct ChangelogEntry: Identifiable {
 /// 更新日志：以后每发一版，在最前面加一条。
 enum Changelog {
     static let entries: [ChangelogEntry] = [
+        ChangelogEntry(version: "1.5", date: "2026-07", changes: [
+            "新增：.ics 里的日历事件（VEVENT）可导入「日历」App，支持选择/新建目标日历",
+            "新增：导入完成后显示内容摘要——每条待办/事件的时间、地点、提醒与重复一目了然",
+            "改进：iPad 大屏采用左右双栏布局",
+            "全新应用图标",
+        ]),
         ChangelogEntry(version: "1.4", date: "2026-06", changes: [
             "新增「快捷指令」支持：导入 ICS、导出 ICS（可在快捷指令/自动化里调用）",
             "开源仓库附带命令行工具 easyreminder",

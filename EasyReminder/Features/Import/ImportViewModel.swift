@@ -259,16 +259,17 @@ final class ImportViewModel {
     }
 
     private static func recurrenceText(_ r: RecurrenceRule) -> String {
-        let unit: String
-        switch r.frequency {
-        case .daily:   unit = String(localized: "天")
-        case .weekly:  unit = String(localized: "周")
-        case .monthly: unit = String(localized: "个月")
-        case .yearly:  unit = String(localized: "年")
+        // 整句本地化（组合式“每 N 单位”在英/西语里没法正确变形）
+        switch (r.frequency, r.interval > 1) {
+        case (.daily, false):   return String(localized: "每天重复")
+        case (.daily, true):    return String(localized: "每 \(r.interval) 天重复")
+        case (.weekly, false):  return String(localized: "每周重复")
+        case (.weekly, true):   return String(localized: "每 \(r.interval) 周重复")
+        case (.monthly, false): return String(localized: "每月重复")
+        case (.monthly, true):  return String(localized: "每 \(r.interval) 个月重复")
+        case (.yearly, false):  return String(localized: "每年重复")
+        case (.yearly, true):   return String(localized: "每 \(r.interval) 年重复")
         }
-        return r.interval > 1
-            ? String(localized: "每 \(r.interval) \(unit)重复")
-            : String(localized: "每\(unit)重复")
     }
 
     private static func dateText(_ d: Date) -> String {
