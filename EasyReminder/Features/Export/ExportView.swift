@@ -4,6 +4,9 @@ import EasyReminderKit
 
 struct ExportView: View {
     @State private var viewModel: ExportViewModel
+    #if os(iOS)
+    @Environment(\.horizontalSizeClass) private var hSizeClass
+    #endif
 
     init(viewModel: ExportViewModel) {
         _viewModel = State(initialValue: viewModel)
@@ -14,7 +17,7 @@ struct ExportView: View {
             Text("从提醒事项导出为 ICS")
                 .font(.headline)
 
-            // macOS 横向双栏（目标 | 项目）；iPhone 太窄，改竖排。
+            // macOS 与 iPad(regular) 横向双栏（目标 | 项目）；iPhone 窄屏竖排。
             paneLayout {
                 targetPane
                 itemsPane
@@ -46,7 +49,10 @@ struct ExportView: View {
         #if os(macOS)
         AnyLayout(HStackLayout(alignment: .top, spacing: 24))
         #else
-        AnyLayout(VStackLayout(alignment: .leading, spacing: 16))
+        // iPad / 横屏大 iPhone（regular）也用双栏；紧凑宽度竖排。
+        hSizeClass == .regular
+            ? AnyLayout(HStackLayout(alignment: .top, spacing: 24))
+            : AnyLayout(VStackLayout(alignment: .leading, spacing: 16))
         #endif
     }
 
@@ -63,7 +69,7 @@ struct ExportView: View {
             #if os(macOS)
             .frame(width: 200)
             #else
-            .frame(maxWidth: .infinity, alignment: .leading)
+            .frame(maxWidth: hSizeClass == .regular ? 280 : .infinity, alignment: .leading)
             #endif
         }
     }
