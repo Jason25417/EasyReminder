@@ -235,7 +235,8 @@ private struct ICSFile: Transferable {
     let text: String
     let filename: String
 
-    static var transferRepresentation: some TransferRepresentation {
+    // Transferable 的协议要求是 nonisolated 的；默认 MainActor 隔离下必须显式标注
+    nonisolated static var transferRepresentation: some TransferRepresentation {
         FileRepresentation(exportedContentType: UTType(filenameExtension: "ics") ?? .plainText) { file in
             let url = FileManager.default.temporaryDirectory.appendingPathComponent(file.filename)
             try file.text.write(to: url, atomically: true, encoding: .utf8)

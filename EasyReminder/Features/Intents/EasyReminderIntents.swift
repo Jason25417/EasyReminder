@@ -25,12 +25,14 @@ enum ICSExportScope: String, AppEnum {
     }
 }
 
-private func trimmedOrNil(_ s: String?) -> String? {
+// 工程开了 SWIFT_DEFAULT_ACTOR_ISOLATION = MainActor，而 AppIntent.perform() 不在主 actor：
+// 模块级辅助必须显式 nonisolated（Xcode 26.6 会报错，27 才放行——商店包用 26.6 打）
+private nonisolated func trimmedOrNil(_ s: String?) -> String? {
     let t = s?.trimmingCharacters(in: .whitespaces)
     return (t?.isEmpty == false) ? t : nil
 }
 
-private var icsUTType: UTType { UTType("com.apple.ical.ics") ?? .text }
+private nonisolated var icsUTType: UTType { UTType("com.apple.ical.ics") ?? .text }
 
 /// 快捷指令：导入 .ics（待办 → 提醒事项，事件 → 日历）。
 struct ImportICSIntent: AppIntent {
