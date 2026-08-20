@@ -25,6 +25,8 @@ public final class EventKitCalendarService: CalendarService {
             event.location = item.location
             event.url = item.url
             event.isAllDay = item.isAllDay
+            // TZID 时区：定时事件按源时区落地（重复事件跨夏令时才不会漂移）；全天事件保持浮动
+            if !item.isAllDay, let tz = item.timeZone { event.timeZone = tz }
 
             // 无 DTSTART 的事件极少见：以“现在”兜底，保证可写入。
             let start = item.startDate ?? Date()

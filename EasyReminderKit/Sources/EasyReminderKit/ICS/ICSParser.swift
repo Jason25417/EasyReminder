@@ -114,7 +114,10 @@ public struct ICSParser {
         var params: [String: String] = [:]
         for p in parts.dropFirst() {
             let kv = p.components(separatedBy: "=")
-            if kv.count == 2 { params[kv[0].uppercased()] = kv[1] }
+            // RFC 5545 参数值可带双引号（如 TZID="America/New_York"），统一剥掉
+            if kv.count == 2 {
+                params[kv[0].uppercased()] = kv[1].trimmingCharacters(in: CharacterSet(charactersIn: "\""))
+            }
         }
         return (name, params, value)
     }
@@ -166,10 +169,12 @@ public struct ICSParser {
         }
         let recurrence = props["RRULE"].flatMap { parseRecurrence($0.value) }
         let alarms = alarmBlocks.compactMap { parseAlarm($0) }
+        let timeZone = props["DTSTART"]?.params["TZID"].flatMap { TimeZone(identifier: $0) }
 
         return EventItem(title: title, notes: notes, location: location,
                          startDate: start, endDate: end, isAllDay: isAllDay,
-                         url: url, uid: uid, alarms: alarms, recurrence: recurrence)
+                         url: url, uid: uid, alarms: alarms, recurrence: recurrence,
+                         timeZone: timeZone)
     }
 
     // MARK: - 日期
@@ -185,8 +190,20 @@ public struct ICSParser {
             fmt.dateFormat = "yyyyMMdd'T'HHmmss'Z'"; fmt.timeZone = TimeZone(identifier: "UTC")
             return fmt.date(from: value)
         }
-        fmt.dateFormat = "yyyyMMdd'T'HHmmss"; fmt.timeZone = .current
+        // 带 TZID 参数：按该时区解释；识别不了（如 Windows 时区名）回落设备时区
+        fmt.dateFormat = "yyyyMMdd'T'HHmmss"
+        fmt.timeZone = params["TZID"].flatMap { TimeZone(identifier: $0) } ?? .current
         return fmt.date(from: value)
+    }
+
+    /// DTSTART/DUE/DTEND 里出现了但 TimeZone 认不出的 TZID（如 Outlook 的 Windows 时区名）。
+    private func unresolvedTZID(in props: Props) -> String? {
+        for key in ["DTSTART", "DTEND", "DUE"] {
+            if let tzid = props[key]?.params["TZID"], TimeZone(identifier: tzid) == nil {
+                return tzid
+            }
+        }
+        return nil
     }
 
     // MARK: - VALARM

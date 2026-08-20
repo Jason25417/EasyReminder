@@ -113,4 +113,81 @@ final class ICSParserEventTests: XCTestCase {
         XCTAssertNil(e.endDate)
         XCTAssertNotNil(e.startDate)
     }
+
+    // MARK: - TZID
+
+    /// TZID 必须按其所指时区解释（Google/Outlook/Zoom 导出的默认写法），
+    /// 而不是设备本地时区。LA 九月为 PDT(UTC-7)：09:00 → 16:00Z。
+    func testTZIDIsHonored() {
+        let ics = wrap("""
+        BEGIN:VEVENT\r
+        SUMMARY:跨时区会议\r
+        DTSTART;TZID=America/Los_Angeles:20260901T090000\r
+        DTEND;TZID=America/Los_Angeles:20260901T100000\r
+        END:VEVENT
+        """)
+        let e = ICSParser().parseContent(ics).events[0]
+        let expected = utcDate(2026, 9, 1, 16, 0)
+        XCTAssertEqual(e.startDate!.timeIntervalSince1970, expected.timeIntervalSince1970, accuracy: 1)
+        XCTAssertEqual(e.endDate!.timeIntervalSince(e.startDate!), 3600, accuracy: 1)
+        XCTAssertEqual(e.timeZone?.identifier, "America/Los_Angeles")
+    }
+
+    /// RFC 5545 允许参数值带双引号：TZID="Europe/London" 也要能识别。
+    func testQuotedTZID() {
+        let ics = wrap("""
+        BEGIN:VEVENT\r
+        SUMMARY:伦敦会议\r
+        DTSTART;TZID="Europe/London":20260901T120000\r
+        END:VEVENT
+        """)
+        let e = ICSParser().parseContent(ics).events[0]
+        // 伦敦九月为 BST(UTC+1)：12:00 → 11:00Z
+        let expected = utcDate(2026, 9, 1, 11, 0)
+        XCTAssertEqual(e.startDate!.timeIntervalSince1970, expected.timeIntervalSince1970, accuracy: 1)
+        XCTAssertEqual(e.timeZone?.identifier, "Europe/London")
+    }
+
+    /// 识别不了的 TZID（Outlook 的 Windows 时区名）回落设备时区，不崩、不丢事件。
+    func testUnknownTZIDFallsBackToDeviceZone() {
+        let ics = wrap("""
+        BEGIN:VEVENT\r
+        SUMMARY:Windows 时区\r
+        DTSTART;TZID=Pacific Standard Time:20260901T090000\r
+        END:VEVENT
+        """)
+        let content = ICSParser().parseContent(ics)
+        XCTAssertEqual(content.events.count, 1)
+        let e = content.events[0]
+        XCTAssertNotNil(e.startDate)
+        XCTAssertNil(e.timeZone)
+        // 回落行为 = 按设备时区解释
+        let fmt = DateFormatter()
+        fmt.locale = Locale(identifier: "en_US_POSIX")
+        fmt.dateFormat = "yyyyMMdd'T'HHmmss"
+        fmt.timeZone = .current
+        XCTAssertEqual(e.startDate, fmt.date(from: "20260901T090000"))
+    }
+
+    /// VTODO 的 DUE 同样要吃 TZID。
+    func testTodoDueWithTZID() {
+        let ics = wrap("""
+        BEGIN:VTODO\r
+        SUMMARY:交报告\r
+        DUE;TZID=Asia/Shanghai:20260901T180000\r
+        END:VTODO
+        """)
+        let t = ICSParser().parseContent(ics).todos[0]
+        // 上海 UTC+8：18:00 → 10:00Z
+        let expected = utcDate(2026, 9, 1, 10, 0)
+        XCTAssertEqual(t.dueDate!.timeIntervalSince1970, expected.timeIntervalSince1970, accuracy: 1)
+    }
+
+    private func utcDate(_ y: Int, _ mo: Int, _ d: Int, _ h: Int, _ mi: Int) -> Date {
+        var c = DateComponents()
+        c.year = y; c.month = mo; c.day = d; c.hour = h; c.minute = mi
+        var cal = Calendar(identifier: .gregorian)
+        cal.timeZone = TimeZone(identifier: "UTC")!
+        return cal.date(from: c)!
+    }
 }

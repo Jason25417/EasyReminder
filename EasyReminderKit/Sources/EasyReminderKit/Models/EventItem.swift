@@ -13,6 +13,7 @@ public struct EventItem: Identifiable {
     public var uid: String?
     public var alarms: [ReminderAlarm]
     public var recurrence: RecurrenceRule?
+    public var timeZone: TimeZone?  // DTSTART 的 TZID（无或识别不了则为 nil，按设备时区处理）
 
     public init(title: String,
                 notes: String? = nil,
@@ -23,7 +24,8 @@ public struct EventItem: Identifiable {
                 url: URL? = nil,
                 uid: String? = nil,
                 alarms: [ReminderAlarm] = [],
-                recurrence: RecurrenceRule? = nil) {
+                recurrence: RecurrenceRule? = nil,
+                timeZone: TimeZone? = nil) {
         self.title = title
         self.notes = notes
         self.location = location
@@ -34,6 +36,7 @@ public struct EventItem: Identifiable {
         self.uid = uid
         self.alarms = alarms
         self.recurrence = recurrence
+        self.timeZone = timeZone
     }
 }
 
