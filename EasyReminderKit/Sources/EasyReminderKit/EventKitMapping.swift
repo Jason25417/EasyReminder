@@ -60,6 +60,29 @@ enum EventKitMapping {
             end: end)
     }
 
+    // MARK: - 起止时间归一化
+
+    /// 把 EventItem 的起止时间归一化成 EKEvent 可写的 (start, end)。
+    /// 全天：ICS 的 DTEND 是「互斥」日（次日零点），EK 的 endDate 要落在最后一天当天；
+    /// 必须用日历天运算而非固定 86400 秒——跨夏令时切换的那天不是 24 小时。
+    /// 定时：无结束按 1 小时兜底；end < start 钳到 start。
+    static func dateRange(start: Date?, end: Date?, isAllDay: Bool,
+                          calendar: Calendar = .current, now: Date = Date()) -> (start: Date, end: Date) {
+        let s = start ?? now
+        if isAllDay {
+            guard let e = end else { return (s, s) }
+            let days = calendar.dateComponents([.day],
+                                               from: calendar.startOfDay(for: s),
+                                               to: calendar.startOfDay(for: e)).day ?? 0
+            if days > 1, let adjusted = calendar.date(byAdding: .day, value: -1, to: e) {
+                return (s, adjusted)
+            }
+            return (s, s)
+        }
+        let e = end ?? s.addingTimeInterval(3600)
+        return (s, max(e, s))
+    }
+
     // MARK: - EventKit → 模型（导出侧）
 
     static func alarmModel(_ a: EKAlarm) -> ReminderAlarm {

@@ -29,21 +29,11 @@ public final class EventKitCalendarService: CalendarService {
             if !item.isAllDay, let tz = item.timeZone { event.timeZone = tz }
 
             // 无 DTSTART 的事件极少见：以“现在”兜底，保证可写入。
-            let start = item.startDate ?? Date()
+            let (start, end) = EventKitMapping.dateRange(start: item.startDate,
+                                                         end: item.endDate,
+                                                         isAllDay: item.isAllDay)
             event.startDate = start
-            if item.isAllDay {
-                // RFC 5545 的 DTEND 是“互斥”日（次日零点）；EventKit 全天事件的
-                // endDate 落在最后一天当天即可。单日全天 end=start。
-                if let end = item.endDate, end.timeIntervalSince(start) > 86400 {
-                    event.endDate = end.addingTimeInterval(-86400)
-                } else {
-                    event.endDate = start
-                }
-            } else {
-                // 无结束时间按 1 小时兜底
-                let end = item.endDate ?? start.addingTimeInterval(3600)
-                event.endDate = max(end, start)
-            }
+            event.endDate = end
 
             for alarm in item.alarms { event.addAlarm(EventKitMapping.alarm(alarm)) }
             if let rule = item.recurrence { event.addRecurrenceRule(EventKitMapping.recurrence(rule)) }
