@@ -116,6 +116,8 @@ public final class EventKitRemindersService: RemindersService {
             return mapped.filter { $0.isCompleted }
         case .all, .list:
             return mapped
+        case .calendar:
+            return []   // 事件日历走 CalendarService.fetchEvents，不经此接口
         }
     }
 
