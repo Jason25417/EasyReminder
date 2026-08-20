@@ -57,6 +57,11 @@ final class ExportViewModel {
     }
 
     func load() async {
+        // 先在局部把两组目标都算好，最后一次性赋值——
+        // 分步赋值会让视图渲染出「有条目但 selection 还是 nil」的中间态，
+        // iPadOS 26 的菜单式 Picker 会在这种状态下断言崩溃（UIMenu 单选断言）
+        var newReminderTargets: [ExportTarget] = []
+        var loadError: String?
         do {
             var t: [ExportTarget] = [
                 ExportTarget(id: "smart.all", title: String(localized: "全部（所有列表）"), kind: .all),
@@ -65,28 +70,28 @@ final class ExportViewModel {
                 ExportTarget(id: "smart.completed", title: String(localized: "已完成"), kind: .completed),
             ]
             t.append(contentsOf: try await service.fetchLists())
-            reminderTargets = t
+            newReminderTargets = t
         } catch RemindersError.accessDenied {
-            reminderTargets = []
-            status = String(localized: "提醒事项权限被拒绝")
+            loadError = String(localized: "提醒事项权限被拒绝")
         } catch {
-            reminderTargets = []
-            status = String(localized: "加载列表失败：\(error.localizedDescription)")
+            loadError = String(localized: "加载列表失败：\(error.localizedDescription)")
         }
 
         // 日历目标读不到（如权限被拒）不阻塞提醒导出，只是不出现日历分区
+        var newCalendarTargets: [ExportTarget] = []
         if let cals = try? await calendarService.fetchCalendars() {
-            calendarTargets = cals.map { info in
+            newCalendarTargets = cals.map { info in
                 let duplicated = cals.filter { $0.title == info.title }.count > 1
                 let title = duplicated && !info.account.isEmpty ? "\(info.title) — \(info.account)" : info.title
                 return ExportTarget(id: "cal.\(info.id)", title: title,
                                     kind: .calendar(calendarID: info.id))
             }
-        } else {
-            calendarTargets = []
         }
 
-        if selectedID == nil { selectedID = targets.first?.id }
+        if selectedID == nil { selectedID = (newReminderTargets + newCalendarTargets).first?.id }
+        reminderTargets = newReminderTargets
+        calendarTargets = newCalendarTargets
+        if let loadError { status = loadError }
         await loadItems()
     }
 

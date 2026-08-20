@@ -74,26 +74,33 @@ struct ExportView: View {
         VStack(alignment: .leading, spacing: 12) {
             VStack(alignment: .leading, spacing: 6) {
                 Text("导出目标").font(.subheadline).foregroundStyle(.secondary)
-                Picker("导出目标", selection: $viewModel.selectedID) {
-                    Section("提醒事项") {
-                        ForEach(viewModel.reminderTargets) { target in
-                            Text(target.title).tag(Optional(target.id))
+                // 目标还没加载出来时不渲染 Picker（空菜单 + nil 选中在 iPadOS 26 会断言崩溃）
+                if viewModel.targets.isEmpty {
+                    ProgressView()
+                } else {
+                    Picker("导出目标", selection: $viewModel.selectedID) {
+                        if !viewModel.reminderTargets.isEmpty {
+                            Section("提醒事项") {
+                                ForEach(viewModel.reminderTargets) { target in
+                                    Text(target.title).tag(Optional(target.id))
+                                }
+                            }
                         }
-                    }
-                    if !viewModel.calendarTargets.isEmpty {
-                        Section("日历") {
-                            ForEach(viewModel.calendarTargets) { target in
-                                Text(target.title).tag(Optional(target.id))
+                        if !viewModel.calendarTargets.isEmpty {
+                            Section("日历") {
+                                ForEach(viewModel.calendarTargets) { target in
+                                    Text(target.title).tag(Optional(target.id))
+                                }
                             }
                         }
                     }
+                    .labelsHidden()
+                    #if os(macOS)
+                    .frame(width: 200)
+                    #else
+                    .frame(maxWidth: hSizeClass == .regular ? 280 : .infinity, alignment: .leading)
+                    #endif
                 }
-                .labelsHidden()
-                #if os(macOS)
-                .frame(width: 200)
-                #else
-                .frame(maxWidth: hSizeClass == .regular ? 280 : .infinity, alignment: .leading)
-                #endif
             }
 
             if viewModel.isCalendarTarget {
