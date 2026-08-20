@@ -10,26 +10,32 @@ public struct ICSParser {
 
     public init() {}
 
-    /// 累计一条 VTODO 里 EventKit 写不进的私有字段（标签/子任务/附件）。
+    /// 累计一个 VTODO / VEVENT 块里 EventKit 写不进的字段（标签/子任务/附件/参与者/例外日期）。
     private struct IgnoredCounter {
         var subtasks = 0
         var tags = 0
         var attachments = 0
+        var attendees = 0
+        var exceptionDates = 0
 
-        mutating func note(property name: String, value: String) {
+        mutating func note(property name: String, value: String, isEvent: Bool) {
             switch name {
-            case "RELATED-TO": subtasks += 1
             case "ATTACH":     attachments += 1
             case "CATEGORIES": tags += value.split(separator: ",").count
+            case "RELATED-TO" where !isEvent: subtasks += 1
+            case "ATTENDEE", "ORGANIZER":     attendees += 1
+            case "EXDATE" where isEvent:      exceptionDates += value.split(separator: ",").count
             default: break
             }
         }
 
         func fields() -> [IgnoredField] {
             var result: [IgnoredField] = []
-            if subtasks > 0    { result.append(.subtasks(subtasks)) }
-            if tags > 0        { result.append(.tags(tags)) }
-            if attachments > 0 { result.append(.attachments(attachments)) }
+            if subtasks > 0       { result.append(.subtasks(subtasks)) }
+            if tags > 0           { result.append(.tags(tags)) }
+            if attachments > 0    { result.append(.attachments(attachments)) }
+            if attendees > 0      { result.append(.attendees(attendees)) }
+            if exceptionDates > 0 { result.append(.exceptionDates(exceptionDates)) }
             return result
         }
     }
@@ -56,7 +62,7 @@ public struct ICSParser {
             case "BEGIN:VTODO":
                 block = [:]; blockIsEvent = false; alarms = []; alarm = nil; ignored = IgnoredCounter()
             case "BEGIN:VEVENT":
-                block = [:]; blockIsEvent = true; alarms = []; alarm = nil
+                block = [:]; blockIsEvent = true; alarms = []; alarm = nil; ignored = IgnoredCounter()
             case "BEGIN:VALARM":
                 alarm = [:]
             case "END:VALARM":
@@ -65,13 +71,26 @@ public struct ICSParser {
             case "END:VTODO":
                 if let t = block, !blockIsEvent {
                     var item = makeItem(from: t, alarmBlocks: alarms)
-                    item.ignoredFields = ignored.fields()
+                    var fields = ignored.fields()
+                    if let tz = unresolvedTZID(in: t) { fields.append(.unresolvedTimeZone(tz)) }
+                    item.ignoredFields = fields
                     content.todos.append(item)
                 }
                 block = nil; alarms = []
             case "END:VEVENT":
                 if let e = block, blockIsEvent {
-                    content.events.append(makeEvent(from: e, alarmBlocks: alarms))
+                    if e["RECURRENCE-ID"] != nil {
+                        // 重复序列中某一次的覆盖块：导入会变成独立的重复条目，跳过并计数
+                        content.skippedOverrides += 1
+                    } else if e["STATUS"]?.value.uppercased() == "CANCELLED" {
+                        content.skippedCancelled += 1
+                    } else {
+                        var item = makeEvent(from: e, alarmBlocks: alarms)
+                        var fields = ignored.fields()
+                        if let tz = unresolvedTZID(in: e) { fields.append(.unresolvedTimeZone(tz)) }
+                        item.ignoredFields = fields
+                        content.events.append(item)
+                    }
                 }
                 block = nil; alarms = []
             default:
@@ -80,7 +99,7 @@ public struct ICSParser {
                     alarm?[name] = (params, value)
                 } else if block != nil {
                     block?[name] = (params, value)
-                    if !blockIsEvent { ignored.note(property: name, value: value) }
+                    ignored.note(property: name, value: value, isEvent: blockIsEvent)
                 }
             }
         }

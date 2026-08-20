@@ -247,4 +247,96 @@ final class ICSParserEventTests: XCTestCase {
         let r = ICSParser().parseContent(ics).events[0].recurrence
         XCTAssertEqual(r?.count, 1)
     }
+
+    // MARK: - 跳过与忽略（诚实兜底）
+
+    /// Google 导出形状：主重复块 + 移动过的覆盖块 + 已取消的覆盖块（同一 UID）。
+    /// 只导主块；两个覆盖块分别计入 skippedOverrides，不产生重复/幽灵事件。
+    func testRecurrenceOverridesAreSkippedNotDuplicated() {
+        let ics = wrap("""
+        BEGIN:VEVENT\r
+        UID:series-1\r
+        SUMMARY:周会\r
+        DTSTART:20260901T130000Z\r
+        RRULE:FREQ=WEEKLY;BYDAY=TU\r
+        END:VEVENT\r
+        BEGIN:VEVENT\r
+        UID:series-1\r
+        RECURRENCE-ID:20260908T130000Z\r
+        SUMMARY:周会（移到周三）\r
+        DTSTART:20260909T130000Z\r
+        END:VEVENT\r
+        BEGIN:VEVENT\r
+        UID:series-1\r
+        RECURRENCE-ID:20260915T130000Z\r
+        STATUS:CANCELLED\r
+        SUMMARY:周会\r
+        DTSTART:20260915T130000Z\r
+        END:VEVENT
+        """)
+        let content = ICSParser().parseContent(ics)
+        XCTAssertEqual(content.events.count, 1)
+        XCTAssertEqual(content.events[0].title, "周会")
+        XCTAssertEqual(content.skippedOverrides, 2)
+    }
+
+    /// 独立的 STATUS:CANCELLED 事件（无 RECURRENCE-ID）同样跳过。
+    func testStandaloneCancelledEventSkipped() {
+        let ics = wrap("""
+        BEGIN:VEVENT\r
+        SUMMARY:被取消的活动\r
+        STATUS:CANCELLED\r
+        DTSTART:20260901T130000Z\r
+        END:VEVENT
+        """)
+        let content = ICSParser().parseContent(ics)
+        XCTAssertTrue(content.events.isEmpty)
+        XCTAssertEqual(content.skippedCancelled, 1)
+    }
+
+    /// ATTENDEE/ORGANIZER/EXDATE 写不进日历，必须进 ignoredFields 提示。
+    func testEventIgnoredFieldsCollected() {
+        let ics = wrap("""
+        BEGIN:VEVENT\r
+        SUMMARY:项目会\r
+        DTSTART:20260901T130000Z\r
+        RRULE:FREQ=WEEKLY\r
+        ORGANIZER:mailto:boss@example.com\r
+        ATTENDEE:mailto:a@example.com\r
+        ATTENDEE:mailto:b@example.com\r
+        EXDATE:20260908T130000Z,20260915T130000Z\r
+        END:VEVENT
+        """)
+        let e = ICSParser().parseContent(ics).events[0]
+        XCTAssertTrue(e.ignoredFields.contains(.attendees(3)))
+        XCTAssertTrue(e.ignoredFields.contains(.exceptionDates(2)))
+    }
+
+    /// 认不出的 TZID 要在 ignoredFields 里挂号，而不是无声回落。
+    func testUnknownTZIDNotedAsIgnored() {
+        let ics = wrap("""
+        BEGIN:VEVENT\r
+        SUMMARY:Outlook 事件\r
+        DTSTART;TZID=Pacific Standard Time:20260901T090000\r
+        END:VEVENT
+        """)
+        let e = ICSParser().parseContent(ics).events[0]
+        XCTAssertTrue(e.ignoredFields.contains(.unresolvedTimeZone("Pacific Standard Time")))
+    }
+
+    /// VTODO 的忽略字段行为回归：RELATED-TO/CATEGORIES/ATTACH 照旧计数。
+    func testTodoIgnoredFieldsRegression() {
+        let ics = wrap("""
+        BEGIN:VTODO\r
+        SUMMARY:大任务\r
+        RELATED-TO:sub-1\r
+        CATEGORIES:学习,工作\r
+        ATTACH:https://example.com/f.pdf\r
+        END:VTODO
+        """)
+        let t = ICSParser().parseContent(ics).todos[0]
+        XCTAssertTrue(t.ignoredFields.contains(.subtasks(1)))
+        XCTAssertTrue(t.ignoredFields.contains(.tags(2)))
+        XCTAssertTrue(t.ignoredFields.contains(.attachments(1)))
+    }
 }

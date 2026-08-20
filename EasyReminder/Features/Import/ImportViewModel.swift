@@ -90,13 +90,17 @@ final class ImportViewModel {
                 let c = parser.parseContent(text)
                 content.todos.append(contentsOf: c.todos)
                 content.events.append(contentsOf: c.events)
+                content.skippedOverrides += c.skippedOverrides
+                content.skippedCancelled += c.skippedCancelled
             }
         } catch {
             status = String(localized: "失败：\(error.localizedDescription)")
             return
         }
         guard !content.isEmpty else {
-            status = String(localized: "没解析到任何待办或事件（共 \(urls.count) 个文件）")
+            var msg = String(localized: "没解析到任何待办或事件（共 \(urls.count) 个文件）")
+            if let skipped = Self.skippedNote(content) { msg += "\n" + skipped }
+            status = msg
             return
         }
         pendingContent = content
@@ -144,7 +148,9 @@ final class ImportViewModel {
             await performImport(content, listName: listName, calendarName: calendarName)
         } else {
             pendingContent = content
-            pendingNewContent = ICSContent(todos: newTodos, events: newEvents)
+            pendingNewContent = ICSContent(todos: newTodos, events: newEvents,
+                                           skippedOverrides: content.skippedOverrides,
+                                           skippedCancelled: content.skippedCancelled)
             pendingListName = listName
             pendingCalendarName = calendarName
             duplicateCount = total - fresh
@@ -219,7 +225,7 @@ final class ImportViewModel {
             }
         }
 
-        let ignoredNote = Self.ignoredSummary(content.todos)
+        let ignoredNote = Self.ignoredSummary(content)
         if !headParts.isEmpty {
             let headline = headParts.joined(separator: String(localized: "；"))
             lines.insert(String(localized: "成功导入：\(headline)"), at: 0)
@@ -360,23 +366,50 @@ final class ImportViewModel {
         UserDefaults.standard.set(Array(s), forKey: importedUIDsKey)
     }
 
-    /// 汇总被忽略的私有字段，生成给用户的一句提示；没有则返回 nil。
-    private static func ignoredSummary(_ items: [ReminderItem]) -> String? {
-        let affected = items.filter { !$0.ignoredFields.isEmpty }
-        guard !affected.isEmpty else { return nil }
-        var subtasks = 0, tags = 0, attachments = 0
-        for field in items.flatMap(\.ignoredFields) {
-            switch field {
-            case .subtasks(let n):    subtasks += n
-            case .tags(let n):        tags += n
-            case .attachments(let n): attachments += n
+    /// 汇总被忽略的字段与被跳过的事件，生成给用户的提示；没有则返回 nil。
+    private static func ignoredSummary(_ content: ICSContent) -> String? {
+        let all = content.todos.map(\.ignoredFields) + content.events.map(\.ignoredFields)
+        let affected = all.filter { !$0.isEmpty }.count
+        var lines: [String] = []
+        if affected > 0 {
+            var subtasks = 0, tags = 0, attachments = 0, attendees = 0, exdates = 0
+            var badTZIDs: Set<String> = []
+            for field in all.joined() {
+                switch field {
+                case .subtasks(let n):            subtasks += n
+                case .tags(let n):                tags += n
+                case .attachments(let n):         attachments += n
+                case .attendees(let n):           attendees += n
+                case .exceptionDates(let n):      exdates += n
+                case .unresolvedTimeZone(let tz): badTZIDs.insert(tz)
+                }
             }
+            var parts: [String] = []
+            if subtasks > 0    { parts.append(String(localized: "\(subtasks) 个子任务")) }
+            if tags > 0        { parts.append(String(localized: "\(tags) 个标签")) }
+            if attachments > 0 { parts.append(String(localized: "\(attachments) 个附件")) }
+            if attendees > 0   { parts.append(String(localized: "\(attendees) 个参与者")) }
+            if exdates > 0     { parts.append(String(localized: "\(exdates) 个重复例外日")) }
+            if !badTZIDs.isEmpty {
+                let names = badTZIDs.sorted().joined(separator: String(localized: "、"))
+                parts.append(String(localized: "无法识别的时区 \(names)（已按本机时区处理）"))
+            }
+            let detail = parts.joined(separator: String(localized: "、"))
+            lines.append(String(localized: "注意：\(affected) 条含本 App 写不进的字段（\(detail)），已忽略"))
         }
-        var parts: [String] = []
-        if subtasks > 0    { parts.append(String(localized: "\(subtasks) 个子任务")) }
-        if tags > 0        { parts.append(String(localized: "\(tags) 个标签")) }
-        if attachments > 0 { parts.append(String(localized: "\(attachments) 个附件")) }
-        let detail = parts.joined(separator: String(localized: "、"))
-        return String(localized: "注意：\(affected.count) 条含本 App 写不进的字段（\(detail)），已忽略")
+        if let skipped = skippedNote(content) { lines.append(skipped) }
+        return lines.isEmpty ? nil : lines.joined(separator: "\n")
+    }
+
+    /// 被整块跳过的事件（重复覆盖块 / 已取消）的说明；没有则返回 nil。
+    private static func skippedNote(_ content: ICSContent) -> String? {
+        var lines: [String] = []
+        if content.skippedOverrides > 0 {
+            lines.append(String(localized: "已跳过 \(content.skippedOverrides) 个对重复事件单次的修改（暂不支持，避免生成重复条目）"))
+        }
+        if content.skippedCancelled > 0 {
+            lines.append(String(localized: "已跳过 \(content.skippedCancelled) 个已取消的事件"))
+        }
+        return lines.isEmpty ? nil : lines.joined(separator: "\n")
     }
 }
