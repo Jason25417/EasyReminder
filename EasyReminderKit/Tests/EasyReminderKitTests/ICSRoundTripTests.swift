@@ -59,6 +59,25 @@ final class ICSRoundTripTests: XCTestCase {
         XCTAssertTrue(t.onArrival)
     }
 
+    /// BYDAY/BYMONTHDAY/BYMONTH/BYSETPOS 导出→再解析必须原样回来。
+    func testByPartsRoundTrip() {
+        let rule = RecurrenceRule(frequency: .monthly, interval: 2,
+                                  count: 12,
+                                  daysOfWeek: [.init(weekday: 3, weekNumber: 2), .init(weekday: 6, weekNumber: -1)],
+                                  daysOfMonth: [15, -1],
+                                  monthsOfYear: [3, 9],
+                                  setPositions: [-1])
+        let original = ReminderItem(title: "复杂重复", recurrence: rule)
+        let back = ICSParser().parse(ICSExporter().export([original]))[0].recurrence
+        XCTAssertEqual(back?.frequency, .monthly)
+        XCTAssertEqual(back?.interval, 2)
+        XCTAssertEqual(back?.count, 12)
+        XCTAssertEqual(back?.daysOfWeek, rule.daysOfWeek)
+        XCTAssertEqual(back?.daysOfMonth, rule.daysOfMonth)
+        XCTAssertEqual(back?.monthsOfYear, rule.monthsOfYear)
+        XCTAssertEqual(back?.setPositions, rule.setPositions)
+    }
+
     func testMultipleItemsRoundTrip() {
         let items = [
             ReminderItem(title: "任务一", priority: 1),

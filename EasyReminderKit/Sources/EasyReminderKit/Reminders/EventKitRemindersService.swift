@@ -126,8 +126,8 @@ public final class EventKitRemindersService: RemindersService {
     private func map(_ r: EKReminder) -> ReminderItem {
         let due = r.dueDateComponents.flatMap { Calendar.current.date(from: $0) }
         let start = r.startDateComponents.flatMap { Calendar.current.date(from: $0) }
-        let alarms = (r.alarms ?? []).map(mapAlarm)
-        let recurrence = r.recurrenceRules?.first.map(mapRecurrence)
+        let alarms = (r.alarms ?? []).map(EventKitMapping.alarmModel)
+        let recurrence = r.recurrenceRules?.first.map(EventKitMapping.recurrenceModel)
         return ReminderItem(
             title: r.title ?? "(无标题)",
             notes: r.notes,
@@ -140,35 +140,5 @@ public final class EventKitRemindersService: RemindersService {
             alarms: alarms,
             recurrence: recurrence
         )
-    }
-
-    private func mapAlarm(_ a: EKAlarm) -> ReminderAlarm {
-        if let loc = a.structuredLocation, let geo = loc.geoLocation {
-            return .location(LocationTrigger(
-                title: loc.title ?? "位置",
-                latitude: geo.coordinate.latitude,
-                longitude: geo.coordinate.longitude,
-                radius: loc.radius,
-                onArrival: a.proximity != .leave))
-        }
-        if let date = a.absoluteDate { return .absolute(date) }
-        return .relative(a.relativeOffset)
-    }
-
-    private func mapRecurrence(_ r: EKRecurrenceRule) -> RecurrenceRule {
-        let freq: RecurrenceRule.Frequency
-        switch r.frequency {
-        case .daily:   freq = .daily
-        case .weekly:  freq = .weekly
-        case .monthly: freq = .monthly
-        case .yearly:  freq = .yearly
-        @unknown default: freq = .daily
-        }
-        var rule = RecurrenceRule(frequency: freq, interval: r.interval)
-        if let end = r.recurrenceEnd {
-            if end.occurrenceCount > 0 { rule.count = end.occurrenceCount }
-            else { rule.until = end.endDate }
-        }
-        return rule
     }
 }

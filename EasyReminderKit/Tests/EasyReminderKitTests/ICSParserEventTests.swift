@@ -190,4 +190,61 @@ final class ICSParserEventTests: XCTestCase {
         cal.timeZone = TimeZone(identifier: "UTC")!
         return cal.date(from: c)!
     }
+
+    // MARK: - RRULE BY*
+
+    /// 一周三节课（BYDAY=MO,WE,FR）不能被降级成「每周一次」。
+    func testRRuleByDayWeekly() {
+        let ics = wrap("""
+        BEGIN:VEVENT\r
+        SUMMARY:课程\r
+        DTSTART:20260824T130000Z\r
+        RRULE:FREQ=WEEKLY;BYDAY=MO,WE,FR;UNTIL=20261211T000000Z\r
+        END:VEVENT
+        """)
+        let r = ICSParser().parseContent(ics).events[0].recurrence
+        XCTAssertEqual(r?.frequency, .weekly)
+        XCTAssertEqual(r?.daysOfWeek, [.init(weekday: 2), .init(weekday: 4), .init(weekday: 6)])
+        XCTAssertNotNil(r?.until)
+    }
+
+    /// 每月第 2 个周二（BYDAY=2TU）与倒数第一个周五（-1FR）。
+    func testRRuleByDayOrdinal() {
+        let ics = wrap("""
+        BEGIN:VEVENT\r
+        SUMMARY:例会\r
+        DTSTART:20260901T130000Z\r
+        RRULE:FREQ=MONTHLY;BYDAY=2TU,-1FR\r
+        END:VEVENT
+        """)
+        let r = ICSParser().parseContent(ics).events[0].recurrence
+        XCTAssertEqual(r?.daysOfWeek, [.init(weekday: 3, weekNumber: 2), .init(weekday: 6, weekNumber: -1)])
+    }
+
+    func testRRuleByMonthDayMonthSetPos() {
+        let ics = wrap("""
+        BEGIN:VEVENT\r
+        SUMMARY:发薪\r
+        DTSTART:20260131T090000Z\r
+        RRULE:FREQ=MONTHLY;BYMONTHDAY=-1;BYMONTH=1,7;BYSETPOS=1\r
+        END:VEVENT
+        """)
+        let r = ICSParser().parseContent(ics).events[0].recurrence
+        XCTAssertEqual(r?.daysOfMonth, [-1])
+        XCTAssertEqual(r?.monthsOfYear, [1, 7])
+        XCTAssertEqual(r?.setPositions, [1])
+    }
+
+    /// COUNT=0 会让 EKRecurrenceEnd(occurrenceCount:) 抛 ObjC 异常，必须钳位到 ≥1。
+    func testRRuleCountZeroClamped() {
+        let ics = wrap("""
+        BEGIN:VEVENT\r
+        SUMMARY:坏数据\r
+        DTSTART:20260901T090000Z\r
+        RRULE:FREQ=DAILY;COUNT=0\r
+        END:VEVENT
+        """)
+        let r = ICSParser().parseContent(ics).events[0].recurrence
+        XCTAssertEqual(r?.count, 1)
+    }
 }

@@ -54,9 +54,21 @@ public struct ICSExporter {
 
     private func rrule(_ r: RecurrenceRule) -> String {
         var s = "RRULE:FREQ=\(r.frequency.rawValue);INTERVAL=\(max(1, r.interval))"
+        if !r.daysOfWeek.isEmpty {
+            s += ";BYDAY=" + r.daysOfWeek.map(dayToken).joined(separator: ",")
+        }
+        if !r.daysOfMonth.isEmpty  { s += ";BYMONTHDAY=" + r.daysOfMonth.map(String.init).joined(separator: ",") }
+        if !r.monthsOfYear.isEmpty { s += ";BYMONTH=" + r.monthsOfYear.map(String.init).joined(separator: ",") }
+        if !r.setPositions.isEmpty { s += ";BYSETPOS=" + r.setPositions.map(String.init).joined(separator: ",") }
         if let c = r.count { s += ";COUNT=\(c)" }
         else if let u = r.until { s += ";UNTIL=\(utc(u))" }
         return s
+    }
+
+    private func dayToken(_ w: RecurrenceRule.Weekday) -> String {
+        let codes = ["", "SU", "MO", "TU", "WE", "TH", "FR", "SA"]
+        let code = (1...7).contains(w.weekday) ? codes[w.weekday] : "MO"
+        return w.weekNumber != 0 ? "\(w.weekNumber)\(code)" : code
     }
 
     // MARK: - 工具

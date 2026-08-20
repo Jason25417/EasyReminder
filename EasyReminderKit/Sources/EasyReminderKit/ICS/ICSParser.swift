@@ -274,8 +274,30 @@ public struct ICSParser {
               let freq = RecurrenceRule.Frequency(rawValue: raw.uppercased()) else { return nil }
         var rule = RecurrenceRule(frequency: freq)
         if let i = dict["INTERVAL"], let iv = Int(i) { rule.interval = max(1, iv) }
-        if let c = dict["COUNT"], let cv = Int(c) { rule.count = cv }
+        // EKRecurrenceEnd(occurrenceCount:) 要求 > 0（0 会抛 ObjC 异常，catch 不住），钳位兜底
+        if let c = dict["COUNT"], let cv = Int(c) { rule.count = max(1, cv) }
         if let u = dict["UNTIL"] { rule.until = parseDate(u, params: [:]) }
+        if let v = dict["BYDAY"] {
+            rule.daysOfWeek = v.split(separator: ",").compactMap { parseWeekday(String($0)) }
+        }
+        if let v = dict["BYMONTHDAY"] { rule.daysOfMonth = intList(v) }
+        if let v = dict["BYMONTH"]    { rule.monthsOfYear = intList(v) }
+        if let v = dict["BYSETPOS"]   { rule.setPositions = intList(v) }
         return rule
+    }
+
+    /// BYDAY 单项："MO" / "2TU" / "-1FR" → Weekday(weekday:, weekNumber:)。
+    private func parseWeekday(_ token: String) -> RecurrenceRule.Weekday? {
+        let codes = ["SU": 1, "MO": 2, "TU": 3, "WE": 4, "TH": 5, "FR": 6, "SA": 7]
+        let t = token.trimmingCharacters(in: .whitespaces).uppercased()
+        guard t.count >= 2, let day = codes[String(t.suffix(2))] else { return nil }
+        let prefix = String(t.dropLast(2))
+        if prefix.isEmpty { return .init(weekday: day) }
+        guard let n = Int(prefix) else { return nil }
+        return .init(weekday: day, weekNumber: n)
+    }
+
+    private func intList(_ value: String) -> [Int] {
+        value.split(separator: ",").compactMap { Int($0.trimmingCharacters(in: .whitespaces)) }
     }
 }
