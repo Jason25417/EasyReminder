@@ -71,10 +71,13 @@ enum EventKitMapping {
         let s = start ?? now
         if isAllDay {
             guard let e = end else { return (s, s) }
+            // 非零点的 end（如固定秒数换算出的 23:00）按天进位，防止丢掉最后一天
+            let eDay = calendar.startOfDay(for: e)
+            let eNorm = eDay < e ? (calendar.date(byAdding: .day, value: 1, to: eDay) ?? e) : e
             let days = calendar.dateComponents([.day],
                                                from: calendar.startOfDay(for: s),
-                                               to: calendar.startOfDay(for: e)).day ?? 0
-            if days > 1, let adjusted = calendar.date(byAdding: .day, value: -1, to: e) {
+                                               to: eNorm).day ?? 0
+            if days > 1, let adjusted = calendar.date(byAdding: .day, value: -1, to: eNorm) {
                 return (s, adjusted)
             }
             return (s, s)

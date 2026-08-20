@@ -47,6 +47,18 @@ final class EventKitMappingTests: XCTestCase {
         XCTAssertEqual(comps.day, 1)
     }
 
+    /// 非零点的 end（固定秒数换算跨秋季回拨得到 23:00）要按天进位，不能丢最后一天。
+    func testAllDayNonMidnightEndRoundsUp() {
+        // 模拟旧换算产生的坏数据：end = 11/1 23:00（应视作 11/2 零点 = 互斥日）
+        var c = DateComponents(); c.year = 2026; c.month = 11; c.day = 1; c.hour = 23
+        let badEnd = nyCal.date(from: c)!
+        let (_, e) = EventKitMapping.dateRange(start: nyDate(2026, 10, 31), end: badEnd,
+                                               isAllDay: true, calendar: nyCal)
+        let comps = nyCal.dateComponents([.month, .day], from: e)
+        XCTAssertEqual(comps.month, 11)
+        XCTAssertEqual(comps.day, 1)   // 两天的事件（10/31–11/1），EK end 落在 11/1
+    }
+
     func testAllDayWithoutEnd() {
         let (s, e) = EventKitMapping.dateRange(start: nyDate(2026, 5, 1), end: nil,
                                                isAllDay: true, calendar: nyCal)

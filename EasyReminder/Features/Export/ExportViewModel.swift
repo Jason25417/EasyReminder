@@ -92,14 +92,25 @@ final class ExportViewModel {
 
     /// 选中的目标 / 时间范围变化时重新拉取条目，默认全选。
     func loadItems() async {
-        guard let target = selectedTarget else {
+        // 快照请求参数：await 期间用户可能切换目标/范围，慢的旧请求回来不许覆盖新结果
+        let requestedID = selectedID
+        let reqStart = rangeStart, reqEnd = rangeEnd
+        let stillCurrent = { [weak self] in
+            self.map { $0.selectedID == requestedID && $0.rangeStart == reqStart && $0.rangeEnd == reqEnd } ?? false
+        }
+
+        guard let target = targets.first(where: { $0.id == requestedID }) else {
             items = []; eventItems = []; selectedItemIDs = []; selectedEventIDs = []
             return
         }
         if case .calendar(let calendarID) = target.kind {
+            // 「到」那天要含在内（用户选 8/31 期望 8/31 的事件也导出）：转成 [当天零点, 次日零点)
+            let cal = Calendar.current
+            let from = cal.startOfDay(for: reqStart)
+            let to = cal.date(byAdding: .day, value: 1, to: cal.startOfDay(for: reqEnd)) ?? reqEnd
             do {
-                let fetched = try await calendarService.fetchEvents(in: calendarID,
-                                                                    from: rangeStart, to: rangeEnd)
+                let fetched = try await calendarService.fetchEvents(in: calendarID, from: from, to: to)
+                guard stillCurrent() else { return }
                 eventItems = fetched
                 selectedEventIDs = Set(fetched.map(\.id))
                 items = []; selectedItemIDs = []
@@ -107,12 +118,14 @@ final class ExportViewModel {
                     ? String(localized: "「\(target.title)」在所选时间范围内没有事件")
                     : String(localized: "共 \(fetched.count) 个事件，默认全选（重复事件导出为规则）")
             } catch {
+                guard stillCurrent() else { return }
                 eventItems = []; selectedEventIDs = []
                 status = String(localized: "读取事件失败：\(error.localizedDescription)")
             }
         } else {
             do {
                 let fetched = try await service.fetchReminders(for: target.kind)
+                guard stillCurrent() else { return }
                 items = fetched
                 selectedItemIDs = Set(fetched.map(\.id))
                 eventItems = []; selectedEventIDs = []
@@ -120,6 +133,7 @@ final class ExportViewModel {
                     ? String(localized: "「\(target.title)」里没有条目")
                     : String(localized: "共 \(fetched.count) 条，默认全选")
             } catch {
+                guard stillCurrent() else { return }
                 items = []; selectedItemIDs = []
                 status = String(localized: "读取条目失败：\(error.localizedDescription)")
             }

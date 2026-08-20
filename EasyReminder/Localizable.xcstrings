@@ -769,6 +769,22 @@
         }
       }
     },
+    "在 GitHub 查看最新版本": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "View the latest release on GitHub"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ver la última versión en GitHub"
+          }
+        }
+      }
+    },
     "地点": {
       "localizations": {
         "en": {
@@ -1153,34 +1169,34 @@
         }
       }
     },
-    "已跳过 %lld 个对重复事件单次的修改（暂不支持，避免生成重复条目）": {
+    "已跳过 %lld 个对重复条目单次的修改（暂不支持，避免生成重复内容）": {
       "localizations": {
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "Skipped %lld single-occurrence changes to repeating events (not yet supported; avoids creating duplicate entries)"
+            "value": "Skipped %lld single-occurrence changes to repeating items (not yet supported; avoids creating duplicates)"
           }
         },
         "es": {
           "stringUnit": {
             "state": "translated",
-            "value": "Se omitieron %lld modificaciones de una sola repetición de eventos repetidos (aún no compatible; evita crear entradas duplicadas)"
+            "value": "Se omitieron %lld modificaciones de una sola repetición de elementos repetidos (aún no compatible; evita duplicados)"
           }
         }
       }
     },
-    "已跳过 %lld 个已取消的事件": {
+    "已跳过 %lld 个已取消的条目": {
       "localizations": {
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "Skipped %lld cancelled events"
+            "value": "Skipped %lld cancelled items"
           }
         },
         "es": {
           "stringUnit": {
             "state": "translated",
-            "value": "Se omitieron %lld eventos cancelados"
+            "value": "Se omitieron %lld elementos cancelados"
           }
         }
       }
@@ -1837,6 +1853,22 @@
           "stringUnit": {
             "state": "translated",
             "value": "Ver registro de cambios"
+          }
+        }
+      }
+    },
+    "检查并安装新版本": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Check for and install the latest version"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Buscar e instalar la última versión"
           }
         }
       }

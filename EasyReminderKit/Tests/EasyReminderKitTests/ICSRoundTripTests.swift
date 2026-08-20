@@ -141,6 +141,26 @@ final class ICSRoundTripTests: XCTestCase {
         XCTAssertEqual(back.endDate, endExclusive)
     }
 
+    /// 带源时区的定时事件必须以 TZID 形式导出——固定 UTC 的重复系列跨夏令时会漂移一小时。
+    func testEventTimeZoneRoundTrip() {
+        let tz = TimeZone(identifier: "America/New_York")!
+        var c = DateComponents(); c.year = 2026; c.month = 8; c.day = 17; c.hour = 9
+        var cal = Calendar(identifier: .gregorian); cal.timeZone = tz
+        let start = cal.date(from: c)!   // 纽约 09:00
+
+        let original = EventItem(title: "周会", startDate: start,
+                                 endDate: start.addingTimeInterval(3600), isAllDay: false,
+                                 uid: "tz-round-1",
+                                 recurrence: RecurrenceRule(frequency: .weekly),
+                                 timeZone: tz)
+        let text = ICSExporter().export(events: [original])
+        XCTAssertTrue(text.contains("DTSTART;TZID=America/New_York:20260817T090000"),
+                      "应导出本地时间 + TZID，而不是固定 UTC")
+        let back = ICSParser().parseContent(text).events[0]
+        XCTAssertEqual(back.startDate!.timeIntervalSince1970, start.timeIntervalSince1970, accuracy: 1)
+        XCTAssertEqual(back.timeZone?.identifier, "America/New_York")
+    }
+
     /// 混合导出：待办 + 事件写进同一份 ICS。
     func testMixedContentExport() {
         let content = ICSContent(todos: [ReminderItem(title: "待办甲")],

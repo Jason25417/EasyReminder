@@ -37,7 +37,13 @@ do {
         let calendarName = args.count >= 4 ? args[3] : nil
         let text = try String(contentsOfFile: path, encoding: .utf8)
         let content = ICSParser().parseContent(text)
-        guard !content.isEmpty else { fail("没解析到任何待办或事件：\(path)") }
+        guard !content.isEmpty else {
+            // 内容可能全被有意跳过（覆盖块/已取消）——说清原因，别误报「没解析到」
+            var msg = "没有可导入的待办或事件：\(path)"
+            if content.skippedOverrides > 0 { msg += "\n已跳过 \(content.skippedOverrides) 个对重复条目单次的修改（暂不支持）" }
+            if content.skippedCancelled > 0 { msg += "\n已跳过 \(content.skippedCancelled) 个已取消的条目" }
+            fail(msg)
+        }
 
         var parts: [String] = []
         if !content.todos.isEmpty {
@@ -52,10 +58,10 @@ do {
         }
         print("已导入：" + parts.joined(separator: "；"))
         if content.skippedOverrides > 0 {
-            print("已跳过 \(content.skippedOverrides) 个对重复事件单次的修改（暂不支持）")
+            print("已跳过 \(content.skippedOverrides) 个对重复条目单次的修改（暂不支持）")
         }
         if content.skippedCancelled > 0 {
-            print("已跳过 \(content.skippedCancelled) 个已取消的事件")
+            print("已跳过 \(content.skippedCancelled) 个已取消的条目")
         }
 
     case "export":

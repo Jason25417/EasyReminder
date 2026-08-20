@@ -79,12 +79,22 @@ public final class EventKitCalendarService: CalendarService {
             windowStart = windowEnd
         }
 
-        // 谓词会把重复事件展开成一次次 occurrence：按条目标识去重，只留最早一次（带着规则）
+        // 谓词会把重复事件展开成一次次 occurrence：
+        // 1) 排除 isDetached（被单次修改过的 occurrence 与主系列同 UID，导出会产生非法的重复 UID）
+        // 2) 按条目标识去重
+        // 3) 重复系列取回主条目再映射——occurrence 的起始时间配主规则的 COUNT 会多出幻影次数
         var seen = Set<String>()
         return raw
+            .filter { !$0.isDetached }
             .sorted { ($0.startDate ?? .distantPast) < ($1.startDate ?? .distantPast) }
             .filter { seen.insert($0.calendarItemIdentifier).inserted }
-            .map(mapEvent)
+            .map { occurrence in
+                if occurrence.hasRecurrenceRules,
+                   let master = store.calendarItem(withIdentifier: occurrence.calendarItemIdentifier) as? EKEvent {
+                    return mapEvent(master)
+                }
+                return mapEvent(occurrence)
+            }
     }
 
     private func mapEvent(_ e: EKEvent) -> EventItem {

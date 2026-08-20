@@ -58,10 +58,12 @@ struct ImportView: View {
                     .padding(8)
             }
         }
-        // 从 Finder / 「文件」拖 .ics 进窗口
-        .dropDestination(for: URL.self) { urls, _ in
-            guard !urls.isEmpty else { return false }
-            Task { await viewModel.beginImport(at: urls) }
+        // 从 Finder / 「文件」拖 .ics 进窗口。
+        // 不能用 URL.self：iOS 的 Files 拖拽只提供文件表示（没有 public.file-url 数据），
+        // URL.self 的放置会静默失效——DroppedICSFile 两种表示都接
+        .dropDestination(for: DroppedICSFile.self) { files, _ in
+            guard !files.isEmpty else { return false }
+            Task { await viewModel.beginImport(at: files.map(\.url)) }
             return true
         } isTargeted: { dropTargeted = $0 }
         .fileImporter(isPresented: $showingPicker,
@@ -97,5 +99,22 @@ struct ImportView: View {
         if let ics = UTType(filenameExtension: "ics") { t.append(ics) }
         t.append(.text)
         return t
+    }
+}
+
+/// 拖放进来的 .ics 文件。
+/// iOS（Files 拖拽）走 FileRepresentation：系统给的是临时就地文件，闭包内必须拷走；
+/// macOS（Finder 拖拽）走 ProxyRepresentation 的 file-url，Powerbox 自动授权。
+struct DroppedICSFile: Transferable {
+    let url: URL
+
+    nonisolated static var transferRepresentation: some TransferRepresentation {
+        FileRepresentation(importedContentType: UTType(filenameExtension: "ics") ?? .data) { received in
+            let dest = FileManager.default.temporaryDirectory
+                .appendingPathComponent(UUID().uuidString + "-" + received.file.lastPathComponent)
+            try FileManager.default.copyItem(at: received.file, to: dest)
+            return DroppedICSFile(url: dest)
+        }
+        ProxyRepresentation(importing: { (url: URL) in DroppedICSFile(url: url) })
     }
 }

@@ -70,11 +70,18 @@ public struct ICSParser {
                 alarm = nil
             case "END:VTODO":
                 if let t = block, !blockIsEvent {
-                    var item = makeItem(from: t, alarmBlocks: alarms)
-                    var fields = ignored.fields()
-                    if let tz = unresolvedTZID(in: t) { fields.append(.unresolvedTimeZone(tz)) }
-                    item.ignoredFields = fields
-                    content.todos.append(item)
+                    if t["RECURRENCE-ID"] != nil {
+                        // 与 VEVENT 同理：重复序列的单次覆盖块导入会变成独立条目，跳过并计数
+                        content.skippedOverrides += 1
+                    } else if t["STATUS"]?.value.uppercased() == "CANCELLED" {
+                        content.skippedCancelled += 1
+                    } else {
+                        var item = makeItem(from: t, alarmBlocks: alarms)
+                        var fields = ignored.fields()
+                        if let tz = unresolvedTZID(in: t) { fields.append(.unresolvedTimeZone(tz)) }
+                        item.ignoredFields = fields
+                        content.todos.append(item)
+                    }
                 }
                 block = nil; alarms = []
             case "END:VEVENT":
@@ -184,7 +191,13 @@ public struct ICSParser {
         // 结束：DTEND 优先；否则 DTSTART + DURATION
         var end = props["DTEND"].flatMap { parseDate($0.value, params: $0.params) }
         if end == nil, let start, let dur = props["DURATION"].flatMap({ parseDuration($0.value) }) {
-            end = start.addingTimeInterval(dur)
+            if isAllDay {
+                // 全天事件的 DURATION 是整天数：按日历天数加——固定 86400 秒跨夏令时会落错日
+                let days = max(1, Int((dur / 86400).rounded()))
+                end = Calendar.current.date(byAdding: .day, value: days, to: start)
+            } else {
+                end = start.addingTimeInterval(dur)
+            }
         }
         let recurrence = props["RRULE"].flatMap { parseRecurrence($0.value) }
         let alarms = alarmBlocks.compactMap { parseAlarm($0) }

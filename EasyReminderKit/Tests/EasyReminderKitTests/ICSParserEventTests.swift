@@ -324,6 +324,46 @@ final class ICSParserEventTests: XCTestCase {
         XCTAssertTrue(e.ignoredFields.contains(.unresolvedTimeZone("Pacific Standard Time")))
     }
 
+    /// VTODO 的覆盖块与已取消条目同样要跳过（CalDAV 任务源导出常见）。
+    func testTodoOverridesAndCancelledSkipped() {
+        let ics = wrap("""
+        BEGIN:VTODO\r
+        UID:task-1\r
+        SUMMARY:每周报告\r
+        RRULE:FREQ=WEEKLY\r
+        END:VTODO\r
+        BEGIN:VTODO\r
+        UID:task-1\r
+        RECURRENCE-ID:20260908T130000Z\r
+        SUMMARY:每周报告（改期）\r
+        END:VTODO\r
+        BEGIN:VTODO\r
+        SUMMARY:不办了\r
+        STATUS:CANCELLED\r
+        END:VTODO
+        """)
+        let content = ICSParser().parseContent(ics)
+        XCTAssertEqual(content.todos.count, 1)
+        XCTAssertEqual(content.todos[0].title, "每周报告")
+        XCTAssertEqual(content.skippedOverrides, 1)
+        XCTAssertEqual(content.skippedCancelled, 1)
+    }
+
+    /// 全天事件用 DURATION 表示长度时按日历天数算（固定 86400 秒跨夏令时会丢一天）。
+    func testAllDayDurationUsesCalendarDays() {
+        let ics = wrap("""
+        BEGIN:VEVENT\r
+        SUMMARY:三天活动\r
+        DTSTART;VALUE=DATE:20261031\r
+        DURATION:P3D\r
+        END:VEVENT
+        """)
+        let e = ICSParser().parseContent(ics).events[0]
+        let cal = Calendar.current
+        let expectedEnd = cal.date(byAdding: .day, value: 3, to: e.startDate!)!
+        XCTAssertEqual(e.endDate, expectedEnd)
+    }
+
     /// VTODO 的忽略字段行为回归：RELATED-TO/CATEGORIES/ATTACH 照旧计数。
     func testTodoIgnoredFieldsRegression() {
         let ics = wrap("""

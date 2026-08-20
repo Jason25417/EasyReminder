@@ -48,8 +48,13 @@ public struct ICSExporter {
             // 全天：VALUE=DATE；EventItem.endDate 已是 RFC 5545 的互斥日，直接写
             if let s = item.startDate { l.append("DTSTART;VALUE=DATE:\(dateOnly(s))") }
             if let e = item.endDate { l.append("DTEND;VALUE=DATE:\(dateOnly(e))") }
+        } else if let tz = item.timeZone {
+            // 有源时区：用「本地时间 + TZID」形式导出——重复事件必须钉住墙上时钟，
+            // 固定 UTC 的重复系列跨夏令时后每次都会差一小时（UNTIL 仍按 RFC 5545 用 UTC）
+            if let s = item.startDate { l.append("DTSTART;TZID=\(tz.identifier):\(local(s, in: tz))") }
+            if let e = item.endDate { l.append("DTEND;TZID=\(tz.identifier):\(local(e, in: tz))") }
         } else {
-            // 定时：统一 UTC 形式（Z），避免生成 TZID/VTIMEZONE
+            // 无时区信息：UTC 形式（Z），单次事件无损
             if let s = item.startDate { l.append("DTSTART:\(utc(s))") }
             if let e = item.endDate { l.append("DTEND:\(utc(e))") }
         }
@@ -130,6 +135,15 @@ public struct ICSExporter {
         f.locale = Locale(identifier: "en_US_POSIX")
         f.timeZone = .current
         f.dateFormat = "yyyyMMdd"
+        return f.string(from: date)
+    }
+
+    // 指定时区的本地时间（配 TZID 参数用）
+    private func local(_ date: Date, in tz: TimeZone) -> String {
+        let f = DateFormatter()
+        f.locale = Locale(identifier: "en_US_POSIX")
+        f.timeZone = tz
+        f.dateFormat = "yyyyMMdd'T'HHmmss"
         return f.string(from: date)
     }
 

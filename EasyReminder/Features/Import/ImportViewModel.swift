@@ -109,7 +109,16 @@ final class ImportViewModel {
             return
         }
 
-        if showingListPrompt {
+        if showingDuplicatePrompt {
+            // 查重弹窗还开着又来新文件：收起弹窗，新旧批次并起来重新走目的地确认
+            //（pendingContent 此时还持有上一批完整内容，见 confirmImport 的查重分支）
+            showingDuplicatePrompt = false
+            pendingNewContent = ICSContent()
+            pendingContent.todos.append(contentsOf: incoming.todos)
+            pendingContent.events.append(contentsOf: incoming.events)
+            pendingContent.skippedOverrides += incoming.skippedOverrides
+            pendingContent.skippedCancelled += incoming.skippedCancelled
+        } else if showingListPrompt {
             // 目的地弹框还开着又送来新文件（如 Finder 多选逐个送达）：并入，别覆盖
             pendingContent.todos.append(contentsOf: incoming.todos)
             pendingContent.events.append(contentsOf: incoming.events)
@@ -144,8 +153,9 @@ final class ImportViewModel {
 
     /// 选完目的地点"导入"：查重，有重复先弹提示，否则直接导入。
     func confirmImport() async {
-        guard !pendingContent.isEmpty else { return }
+        // 先收起弹框再检查内容——空内容时留着弹框会变成一个点不动的「导入」死按钮
         showingListPrompt = false
+        guard !pendingContent.isEmpty else { return }
 
         let listName: String?
         switch listChoice {
@@ -434,10 +444,10 @@ final class ImportViewModel {
     private static func skippedNote(_ content: ICSContent) -> String? {
         var lines: [String] = []
         if content.skippedOverrides > 0 {
-            lines.append(String(localized: "已跳过 \(content.skippedOverrides) 个对重复事件单次的修改（暂不支持，避免生成重复条目）"))
+            lines.append(String(localized: "已跳过 \(content.skippedOverrides) 个对重复条目单次的修改（暂不支持，避免生成重复内容）"))
         }
         if content.skippedCancelled > 0 {
-            lines.append(String(localized: "已跳过 \(content.skippedCancelled) 个已取消的事件"))
+            lines.append(String(localized: "已跳过 \(content.skippedCancelled) 个已取消的条目"))
         }
         return lines.isEmpty ? nil : lines.joined(separator: "\n")
     }
