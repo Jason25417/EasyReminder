@@ -1,0 +1,102 @@
+{
+  "sourceLanguage" : "zh-Hans",
+  "strings" : {
+    "提醒事项权限被拒绝" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Reminders access was denied"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Se denegó el acceso a Recordatorios"
+          }
+        }
+      }
+    },
+    "没有可用的提醒列表" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "No reminder list is available"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "No hay ninguna lista de recordatorios disponible"
+          }
+        }
+      }
+    },
+    "日历权限被拒绝" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Calendar access was denied"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Se denegó el acceso a Calendario"
+          }
+        }
+      }
+    },
+    "没有可用的日历" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "No calendar is available"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "No hay ningún calendario disponible"
+          }
+        }
+      }
+    },
+    "文件还没从 iCloud 下载到本机，请稍后重试，或先在「文件」App 里打开一次" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "This file hasn't finished downloading from iCloud. Try again shortly, or open it once in the Files app first."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Este archivo aún no se ha descargado de iCloud. Inténtalo de nuevo en un momento o ábrelo primero en la app Archivos."
+          }
+        }
+      }
+    },
+    "找不到所选日历（可能已被删除）" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "The selected calendar could not be found (it may have been deleted)"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "No se encontró el calendario seleccionado (puede haber sido eliminado)"
+          }
+        }
+      }
+    }
+  },
+  "version" : "1.0"
+}

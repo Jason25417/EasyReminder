@@ -10,11 +10,11 @@ public final class EventKitCalendarService: CalendarService {
         try await store.requestFullAccessToEvents()
     }
 
-    public func importEvents(_ items: [EventItem], intoCalendarNamed calendarName: String?) async throws -> Int {
+    public func importEvents(_ items: [EventItem], into destination: CalendarDestination) async throws -> Int {
         let granted = try await store.requestFullAccessToEvents()
         guard granted else { throw CalendarError.accessDenied }
 
-        let calendar = try resolveCalendar(named: calendarName)
+        let calendar = try resolveCalendar(for: destination)
 
         var count = 0
         for item in items {
@@ -45,35 +45,100 @@ public final class EventKitCalendarService: CalendarService {
         return count
     }
 
-    public func fetchCalendars() async throws -> [String] {
+    public func fetchCalendars() async throws -> [CalendarInfo] {
         let granted = try await store.requestFullAccessToEvents()
         guard granted else { throw CalendarError.accessDenied }
-        var seen = Set<String>()
-        return store.calendars(for: .event)
-            .filter { $0.allowsContentModifications }
-            .map(\.title)
-            .filter { seen.insert($0).inserted }
+        return store.calendars(for: .event).map {
+            CalendarInfo(id: $0.calendarIdentifier,
+                         title: $0.title,
+                         account: $0.source?.title ?? "",
+                         isWritable: $0.allowsContentModifications)
+        }
     }
 
-    // 指定日历名就找/建该日历，否则用默认日历
-    private func resolveCalendar(named name: String?) throws -> EKCalendar {
-        if let name, !name.isEmpty {
+    public func fetchEvents(in calendarID: String?, from: Date, to: Date) async throws -> [EventItem] {
+        let granted = try await store.requestFullAccessToEvents()
+        guard granted else { throw CalendarError.accessDenied }
+        guard from < to else { return [] }
+
+        var calendars: [EKCalendar]?
+        if let calendarID {
+            let matched = store.calendars(for: .event).filter { $0.calendarIdentifier == calendarID }
+            guard !matched.isEmpty else { return [] }
+            calendars = matched
+        }
+
+        // EventKit 谓词最长 4 年：分窗查询再合并
+        var raw: [EKEvent] = []
+        var windowStart = from
+        let cal = Calendar.current
+        while windowStart < to {
+            let windowEnd = min(cal.date(byAdding: .year, value: 4, to: windowStart) ?? to, to)
+            let predicate = store.predicateForEvents(withStart: windowStart, end: windowEnd, calendars: calendars)
+            raw.append(contentsOf: store.events(matching: predicate))
+            windowStart = windowEnd
+        }
+
+        // 谓词会把重复事件展开成一次次 occurrence：按条目标识去重，只留最早一次（带着规则）
+        var seen = Set<String>()
+        return raw
+            .sorted { ($0.startDate ?? .distantPast) < ($1.startDate ?? .distantPast) }
+            .filter { seen.insert($0.calendarItemIdentifier).inserted }
+            .map(mapEvent)
+    }
+
+    private func mapEvent(_ e: EKEvent) -> EventItem {
+        // 全天：EK 的 endDate 落在最后一天当天；EventItem.endDate 按 RFC 5545 存互斥日（次日零点）
+        var end = e.endDate
+        if e.isAllDay, let d = end {
+            let cal = Calendar.current
+            end = cal.date(byAdding: .day, value: 1, to: cal.startOfDay(for: d))
+        }
+        return EventItem(title: e.title ?? "(无标题)",
+                         notes: e.notes,
+                         location: e.location,
+                         startDate: e.startDate,
+                         endDate: end,
+                         isAllDay: e.isAllDay,
+                         url: e.url,
+                         uid: e.calendarItemExternalIdentifier,
+                         alarms: (e.alarms ?? []).map(EventKitMapping.alarmModel),
+                         recurrence: e.recurrenceRules?.first.map(EventKitMapping.recurrenceModel),
+                         timeZone: e.timeZone)
+    }
+
+    private func resolveCalendar(for destination: CalendarDestination) throws -> EKCalendar {
+        switch destination {
+        case .defaultCalendar:
+            guard let def = store.defaultCalendarForNewEvents else {
+                throw CalendarError.noDefaultCalendar
+            }
+            return def
+
+        case .existing(let id):
+            guard let cal = store.calendars(for: .event)
+                .first(where: { $0.calendarIdentifier == id && $0.allowsContentModifications }) else {
+                throw CalendarError.calendarNotFound
+            }
+            return cal
+
+        case .named(let name):
             if let existing = store.calendars(for: .event)
                 .first(where: { $0.title == name && $0.allowsContentModifications }) {
                 return existing
             }
-            let cal = EKCalendar(for: .event, eventStore: store)
-            cal.title = name
-            cal.source = store.defaultCalendarForNewEvents?.source
-                ?? store.sources.first(where: { $0.sourceType == .local })
-                ?? store.sources.first
-            guard cal.source != nil else { throw CalendarError.noDefaultCalendar }
-            try store.saveCalendar(cal, commit: true)
-            return cal
+            return try createCalendar(named: name)
         }
-        guard let def = store.defaultCalendarForNewEvents else {
-            throw CalendarError.noDefaultCalendar
-        }
-        return def
+    }
+
+    private func createCalendar(named name: String) throws -> EKCalendar {
+        let cal = EKCalendar(for: .event, eventStore: store)
+        cal.title = name
+        cal.source = store.defaultCalendarForNewEvents?.source
+            ?? store.sources.first(where: { $0.sourceType == .local })
+            ?? store.sources.first
+        guard cal.source != nil else { throw CalendarError.noDefaultCalendar }
+        try store.saveCalendar(cal, commit: true)
+        return cal
     }
 }

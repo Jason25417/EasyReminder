@@ -36,7 +36,7 @@ final class ImportViewModel {
 
     enum CalendarChoice: Hashable {
         case defaultCalendar
-        case existing(String)   // 现有日历标题
+        case existing(String)   // 现有日历的 calendarIdentifier（同名日历不混淆）
         case newCalendar        // 新建日历（名字见 newCalendarName）
     }
 
@@ -46,12 +46,15 @@ final class ImportViewModel {
     var availableLists: [ExportTarget] = []
     var listChoice: ListChoice = .defaultList
     var newListName: String = ""
-    var availableCalendars: [String] = []
+    var availableCalendars: [CalendarInfo] = []
     var calendarChoice: CalendarChoice = .defaultCalendar
     var newCalendarName: String = ""
     var showingListPrompt = false
     var hasPendingTodos = false
     var hasPendingEvents = false
+    // 权限被拒时选择器换成引导文案，而不是渲染一个空列表还让用户白填新建名
+    var listAccessDenied = false
+    var calendarAccessDenied = false
 
     // 重复导入提示
     var showingDuplicatePrompt = false
@@ -64,12 +67,13 @@ final class ImportViewModel {
     private var pendingContent = ICSContent()
     private var pendingNewContent = ICSContent()
     private var pendingListName: String?
-    private var pendingCalendarName: String?
+    private var pendingCalendarDest: CalendarDestination = .defaultCalendar
+    private var pendingCalendarTitle: String?
 
     private let parser = ICSParser()
     private let service: RemindersService
     private let calendarService: CalendarService
-    private let importedUIDsKey = "EasyReminder.importedUIDs"
+    private let ledger = ImportLedger()
 
     init(service: RemindersService, calendarService: CalendarService) {
         self.service = service
@@ -81,35 +85,60 @@ final class ImportViewModel {
 
     /// 选好文件（可多选）或被打开后：先解析，再按内容弹目的地选择框。
     func beginImport(at urls: [URL]) async {
-        var content = ICSContent()
+        var incoming = ICSContent()
         do {
             for url in urls {
                 let scoped = url.startAccessingSecurityScopedResource()
                 defer { if scoped { url.stopAccessingSecurityScopedResource() } }
-                let text = try String(contentsOf: url, encoding: .utf8)
+                // 协调读取：Files/共享表单给的是就地 URL，iCloud 占位文件要先物化
+                let text = try await ICSFileReader.readText(at: url)
                 let c = parser.parseContent(text)
-                content.todos.append(contentsOf: c.todos)
-                content.events.append(contentsOf: c.events)
-                content.skippedOverrides += c.skippedOverrides
-                content.skippedCancelled += c.skippedCancelled
+                incoming.todos.append(contentsOf: c.todos)
+                incoming.events.append(contentsOf: c.events)
+                incoming.skippedOverrides += c.skippedOverrides
+                incoming.skippedCancelled += c.skippedCancelled
             }
         } catch {
             status = String(localized: "失败：\(error.localizedDescription)")
             return
         }
-        guard !content.isEmpty else {
+        guard !incoming.isEmpty else {
             var msg = String(localized: "没解析到任何待办或事件（共 \(urls.count) 个文件）")
-            if let skipped = Self.skippedNote(content) { msg += "\n" + skipped }
+            if let skipped = Self.skippedNote(incoming) { msg += "\n" + skipped }
             status = msg
             return
         }
-        pendingContent = content
-        hasPendingTodos = !content.todos.isEmpty
-        hasPendingEvents = !content.events.isEmpty
-        listChoice = .defaultList; newListName = ""
-        calendarChoice = .defaultCalendar; newCalendarName = ""
-        availableLists = hasPendingTodos ? ((try? await service.fetchLists()) ?? []) : []
-        availableCalendars = hasPendingEvents ? ((try? await calendarService.fetchCalendars()) ?? []) : []
+
+        if showingListPrompt {
+            // 目的地弹框还开着又送来新文件（如 Finder 多选逐个送达）：并入，别覆盖
+            pendingContent.todos.append(contentsOf: incoming.todos)
+            pendingContent.events.append(contentsOf: incoming.events)
+            pendingContent.skippedOverrides += incoming.skippedOverrides
+            pendingContent.skippedCancelled += incoming.skippedCancelled
+        } else {
+            pendingContent = incoming
+            listChoice = .defaultList; newListName = ""
+            calendarChoice = .defaultCalendar; newCalendarName = ""
+        }
+        hasPendingTodos = !pendingContent.todos.isEmpty
+        hasPendingEvents = !pendingContent.events.isEmpty
+
+        listAccessDenied = false
+        calendarAccessDenied = false
+        if hasPendingTodos {
+            do { availableLists = try await service.fetchLists() }
+            catch RemindersError.accessDenied { availableLists = []; listAccessDenied = true }
+            catch { availableLists = [] }
+        } else {
+            availableLists = []
+        }
+        if hasPendingEvents {
+            do { availableCalendars = try await calendarService.fetchCalendars().filter(\.isWritable) }
+            catch CalendarError.accessDenied { availableCalendars = []; calendarAccessDenied = true }
+            catch { availableCalendars = [] }
+        } else {
+            availableCalendars = []
+        }
         showingListPrompt = true
     }
 
@@ -126,33 +155,40 @@ final class ImportViewModel {
             let n = newListName.trimmingCharacters(in: .whitespaces)
             listName = n.isEmpty ? nil : n
         }
-        let calendarName: String?
+        let calendarDest: CalendarDestination
+        let calendarTitle: String?
         switch calendarChoice {
-        case .defaultCalendar: calendarName = nil
-        case .existing(let title): calendarName = title
+        case .defaultCalendar:
+            calendarDest = .defaultCalendar; calendarTitle = nil
+        case .existing(let id):
+            calendarDest = .existing(id: id)
+            calendarTitle = availableCalendars.first { $0.id == id }?.title
         case .newCalendar:
             let n = newCalendarName.trimmingCharacters(in: .whitespaces)
-            calendarName = n.isEmpty ? nil : n
+            if n.isEmpty { calendarDest = .defaultCalendar; calendarTitle = nil }
+            else { calendarDest = .named(n); calendarTitle = n }
         }
 
         let content = pendingContent
         pendingContent = ICSContent()
 
         // 查重（todos + events 共用 UID 记录）
-        let known = recordedUIDs()
+        let known = ledger.recordedUIDs()
         let newTodos = content.todos.filter { $0.uid.map { !known.contains($0) } ?? true }
         let newEvents = content.events.filter { $0.uid.map { !known.contains($0) } ?? true }
         let total = content.todos.count + content.events.count
         let fresh = newTodos.count + newEvents.count
         if total == fresh {
-            await performImport(content, listName: listName, calendarName: calendarName)
+            await performImport(content, listName: listName,
+                                calendarDest: calendarDest, calendarTitle: calendarTitle)
         } else {
             pendingContent = content
             pendingNewContent = ICSContent(todos: newTodos, events: newEvents,
                                            skippedOverrides: content.skippedOverrides,
                                            skippedCancelled: content.skippedCancelled)
             pendingListName = listName
-            pendingCalendarName = calendarName
+            pendingCalendarDest = calendarDest
+            pendingCalendarTitle = calendarTitle
             duplicateCount = total - fresh
             newCount = fresh
             showingDuplicatePrompt = true
@@ -169,9 +205,11 @@ final class ImportViewModel {
         showingDuplicatePrompt = false
         let content = importAll ? pendingContent : pendingNewContent
         let listName = pendingListName
-        let calendarName = pendingCalendarName
+        let calendarDest = pendingCalendarDest
+        let calendarTitle = pendingCalendarTitle
         pendingContent = ICSContent(); pendingNewContent = ICSContent()
-        await performImport(content, listName: listName, calendarName: calendarName)
+        await performImport(content, listName: listName,
+                            calendarDest: calendarDest, calendarTitle: calendarTitle)
     }
 
     func cancelDuplicate() {
@@ -182,7 +220,8 @@ final class ImportViewModel {
 
     // MARK: - 内部
 
-    private func performImport(_ content: ICSContent, listName: String?, calendarName: String?) async {
+    private func performImport(_ content: ICSContent, listName: String?,
+                               calendarDest: CalendarDestination, calendarTitle: String?) async {
         guard !content.isEmpty else {
             status = String(localized: "没有要导入的条目")
             return
@@ -195,7 +234,7 @@ final class ImportViewModel {
         if !content.todos.isEmpty {
             do {
                 let count = try await service.importReminders(content.todos, intoListNamed: listName)
-                record(content.todos.compactMap(\.uid))
+                ledger.record(content.todos.compactMap(\.uid))
                 let dest = listName.map { String(localized: "列表「\($0)」") } ?? String(localized: "默认列表")
                 headParts.append(String(localized: "\(count) 条待办 → \(dest)"))
                 entries += content.todos.map { Self.entry(for: $0, destination: dest) }
@@ -211,9 +250,9 @@ final class ImportViewModel {
         // 事件 → 日历
         if !content.events.isEmpty {
             do {
-                let count = try await calendarService.importEvents(content.events, intoCalendarNamed: calendarName)
-                record(content.events.compactMap(\.uid))
-                let dest = calendarName.map { String(localized: "日历「\($0)」") } ?? String(localized: "默认日历")
+                let count = try await calendarService.importEvents(content.events, into: calendarDest)
+                ledger.record(content.events.compactMap(\.uid))
+                let dest = calendarTitle.map { String(localized: "日历「\($0)」") } ?? String(localized: "默认日历")
                 headParts.append(String(localized: "\(count) 个事件 → \(dest)"))
                 entries += content.events.map { Self.entry(for: $0, destination: dest) }
             } catch CalendarError.accessDenied {
@@ -354,16 +393,6 @@ final class ImportViewModel {
     private static func timeText(_ d: Date) -> String {
         let f = DateFormatter(); f.dateStyle = .none; f.timeStyle = .short
         return f.string(from: d)
-    }
-
-    /// 已导入过的 ICS UID（本地记录，用于判重）。
-    private func recordedUIDs() -> Set<String> {
-        Set(UserDefaults.standard.stringArray(forKey: importedUIDsKey) ?? [])
-    }
-    private func record(_ uids: [String]) {
-        guard !uids.isEmpty else { return }
-        var s = recordedUIDs(); s.formUnion(uids)
-        UserDefaults.standard.set(Array(s), forKey: importedUIDsKey)
     }
 
     /// 汇总被忽略的字段与被跳过的事件，生成给用户的提示；没有则返回 nil。

@@ -15,3 +15,14 @@ public enum RemindersError: Error {
     case accessDenied      // 用户拒绝授权
     case noDefaultList     // 没有可用的默认提醒列表
 }
+
+extension RemindersError: LocalizedError {
+    public var errorDescription: String? {
+        switch self {
+        case .accessDenied:
+            return String(localized: "提醒事项权限被拒绝", bundle: .module)
+        case .noDefaultList:
+            return String(localized: "没有可用的提醒列表", bundle: .module)
+        }
+    }
+}

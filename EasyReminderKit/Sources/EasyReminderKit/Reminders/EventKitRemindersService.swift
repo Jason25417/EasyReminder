@@ -54,10 +54,12 @@ public final class EventKitRemindersService: RemindersService {
         return count
     }
 
-    // 指定列表名就找/建该列表，否则用默认列表
+    // 指定列表名就找/建该列表，否则用默认列表。
+    // 只匹配可写列表：匹配到只读（订阅/共享的）列表会让每次 save 抛 EKErrorCalendarReadOnly。
     private func resolveCalendar(named name: String?) throws -> EKCalendar {
         if let name, !name.isEmpty {
-            if let existing = store.calendars(for: .reminder).first(where: { $0.title == name }) {
+            if let existing = store.calendars(for: .reminder)
+                .first(where: { $0.title == name && $0.allowsContentModifications }) {
                 return existing
             }
             let cal = EKCalendar(for: .reminder, eventStore: store)

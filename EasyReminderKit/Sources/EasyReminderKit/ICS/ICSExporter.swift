@@ -1,20 +1,63 @@
 import Foundation
 
-/// 把 [ReminderItem] 序列化成 ICS(VTODO) 文本。
+/// 把 [ReminderItem] / [EventItem] 序列化成 ICS(VTODO / VEVENT) 文本。
 public struct ICSExporter {
 
     public init() {}
 
     public func export(_ items: [ReminderItem]) -> String {
+        wrap { lines in
+            for item in items { lines.append(contentsOf: vtodo(item)) }
+        }
+    }
+
+    public func export(events: [EventItem]) -> String {
+        wrap { lines in
+            for event in events { lines.append(contentsOf: vevent(event)) }
+        }
+    }
+
+    /// 混合导出（待办 + 事件），供 CLI / 快捷指令用。
+    public func export(content: ICSContent) -> String {
+        wrap { lines in
+            for item in content.todos { lines.append(contentsOf: vtodo(item)) }
+            for event in content.events { lines.append(contentsOf: vevent(event)) }
+        }
+    }
+
+    private func wrap(_ body: (inout [String]) -> Void) -> String {
         var lines: [String] = [
             "BEGIN:VCALENDAR",
             "VERSION:2.0",
             "PRODID:-//EasyReminder//Export//EN",
             "CALSCALE:GREGORIAN",
         ]
-        for item in items { lines.append(contentsOf: vtodo(item)) }
+        body(&lines)
         lines.append("END:VCALENDAR")
         return lines.joined(separator: "\r\n") + "\r\n"
+    }
+
+    private func vevent(_ item: EventItem) -> [String] {
+        var l: [String] = ["BEGIN:VEVENT"]
+        l.append("UID:\(item.uid ?? UUID().uuidString)")
+        l.append("DTSTAMP:\(utc(Date()))")
+        l.append("SUMMARY:\(escape(item.title))")
+        if let notes = item.notes { l.append("DESCRIPTION:\(escape(notes))") }
+        if let loc = item.location, !loc.isEmpty { l.append("LOCATION:\(escape(loc))") }
+        if item.isAllDay {
+            // 全天：VALUE=DATE；EventItem.endDate 已是 RFC 5545 的互斥日，直接写
+            if let s = item.startDate { l.append("DTSTART;VALUE=DATE:\(dateOnly(s))") }
+            if let e = item.endDate { l.append("DTEND;VALUE=DATE:\(dateOnly(e))") }
+        } else {
+            // 定时：统一 UTC 形式（Z），避免生成 TZID/VTIMEZONE
+            if let s = item.startDate { l.append("DTSTART:\(utc(s))") }
+            if let e = item.endDate { l.append("DTEND:\(utc(e))") }
+        }
+        if let url = item.url { l.append("URL:\(url.absoluteString)") }
+        if let r = item.recurrence { l.append(rrule(r)) }
+        for alarm in item.alarms { l.append(contentsOf: valarm(alarm)) }
+        l.append("END:VEVENT")
+        return l
     }
 
     private func vtodo(_ item: ReminderItem) -> [String] {
@@ -78,6 +121,15 @@ public struct ICSExporter {
         f.locale = Locale(identifier: "en_US_POSIX")
         f.timeZone = TimeZone(identifier: "UTC")
         f.dateFormat = "yyyyMMdd'T'HHmmss'Z'"
+        return f.string(from: date)
+    }
+
+    // 全天日期（按设备时区取历法日）
+    private func dateOnly(_ date: Date) -> String {
+        let f = DateFormatter()
+        f.locale = Locale(identifier: "en_US_POSIX")
+        f.timeZone = .current
+        f.dateFormat = "yyyyMMdd"
         return f.string(from: date)
     }
 

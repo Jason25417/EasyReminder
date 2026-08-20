@@ -89,4 +89,98 @@ final class ICSRoundTripTests: XCTestCase {
         XCTAssertEqual(back[1].isCompleted, true)
         XCTAssertEqual(back[2].recurrence?.frequency, .monthly)
     }
+
+    // MARK: - VEVENT 导出往返（日历 → ICS → 再解析）
+
+    func testEventRoundTrip() {
+        var c = DateComponents()
+        c.year = 2026; c.month = 9; c.day = 10; c.hour = 14; c.minute = 0
+        var cal = Calendar(identifier: .gregorian)
+        cal.timeZone = TimeZone(identifier: "UTC")!
+        let start = cal.date(from: c)!
+
+        let original = EventItem(
+            title: "组会; 每周",
+            notes: "汇报进展\n带电脑",
+            location: "Math Tower 100",
+            startDate: start,
+            endDate: start.addingTimeInterval(5400),
+            isAllDay: false,
+            url: URL(string: "https://example.com/meet"),
+            uid: "ev-round-1",
+            alarms: [.relative(-600)],
+            recurrence: RecurrenceRule(frequency: .weekly, daysOfWeek: [.init(weekday: 5)])
+        )
+
+        let text = ICSExporter().export(events: [original])
+        let back = ICSParser().parseContent(text).events
+        XCTAssertEqual(back.count, 1)
+        let e = back[0]
+        XCTAssertEqual(e.title, original.title)
+        XCTAssertEqual(e.notes, original.notes)
+        XCTAssertEqual(e.location, original.location)
+        XCTAssertEqual(e.uid, "ev-round-1")
+        XCTAssertEqual(e.url, original.url)
+        XCTAssertFalse(e.isAllDay)
+        XCTAssertEqual(e.startDate!.timeIntervalSince1970, start.timeIntervalSince1970, accuracy: 1)
+        XCTAssertEqual(e.endDate!.timeIntervalSince(e.startDate!), 5400, accuracy: 1)
+        XCTAssertEqual(e.recurrence?.daysOfWeek, original.recurrence?.daysOfWeek)
+        XCTAssertEqual(e.alarms.count, 1)
+    }
+
+    /// 全天事件：模型里 endDate 是互斥日，导出 DTEND;VALUE=DATE 后再解析要原样回来。
+    func testAllDayEventRoundTrip() {
+        let cal = Calendar.current
+        let start = cal.startOfDay(for: Date(timeIntervalSince1970: 1_790_000_000))
+        let endExclusive = cal.date(byAdding: .day, value: 3, to: start)!  // 三天的假期
+
+        let original = EventItem(title: "假期", startDate: start, endDate: endExclusive, isAllDay: true)
+        let back = ICSParser().parseContent(ICSExporter().export(events: [original])).events[0]
+        XCTAssertTrue(back.isAllDay)
+        XCTAssertEqual(back.startDate, start)
+        XCTAssertEqual(back.endDate, endExclusive)
+    }
+
+    /// 混合导出：待办 + 事件写进同一份 ICS。
+    func testMixedContentExport() {
+        let content = ICSContent(todos: [ReminderItem(title: "待办甲")],
+                                 events: [EventItem(title: "事件乙")])
+        let back = ICSParser().parseContent(ICSExporter().export(content: content))
+        XCTAssertEqual(back.todos.map(\.title), ["待办甲"])
+        XCTAssertEqual(back.events.map(\.title), ["事件乙"])
+    }
+}
+
+// MARK: - ImportLedger
+
+final class ImportLedgerTests: XCTestCase {
+    private var defaults: UserDefaults!
+
+    override func setUp() {
+        super.setUp()
+        defaults = UserDefaults(suiteName: "EasyReminderKitTests.ledger")!
+        defaults.removePersistentDomain(forName: "EasyReminderKitTests.ledger")
+    }
+
+    func testRecordAndRecall() {
+        let ledger = ImportLedger(defaults: defaults)
+        XCTAssertTrue(ledger.recordedUIDs().isEmpty)
+        ledger.record(["a", "b"])
+        ledger.record(["b", "c"])
+        XCTAssertEqual(ledger.recordedUIDs(), ["a", "b", "c"])
+    }
+
+    func testEmptyRecordIsNoop() {
+        let ledger = ImportLedger(defaults: defaults)
+        ledger.record([])
+        XCTAssertNil(defaults.stringArray(forKey: ImportLedger.defaultKey))
+    }
+
+    func testLocalizedErrorsHaveDescriptions() {
+        XCTAssertNotNil(RemindersError.accessDenied.errorDescription)
+        XCTAssertNotNil(RemindersError.noDefaultList.errorDescription)
+        XCTAssertNotNil(CalendarError.accessDenied.errorDescription)
+        XCTAssertNotNil(CalendarError.noDefaultCalendar.errorDescription)
+        XCTAssertNotNil(CalendarError.calendarNotFound.errorDescription)
+    }
 }
