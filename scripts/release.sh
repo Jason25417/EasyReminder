@@ -17,7 +17,9 @@ ROOT="$(cd "$(dirname "$0")/.." && pwd)"
 cd "$ROOT"
 # 公证凭证(不入库): NOTARY_KEY / NOTARY_KEY_ID / NOTARY_ISSUER
 source "$ROOT/scripts/release.local.sh"
-export DEVELOPER_DIR="${DEVELOPER_DIR:-/Applications/Xcode-beta.app/Contents/Developer}"
+# Xcodes 装的 beta 会随版本改名（Xcode-beta.app → Xcode-27.0.0-Beta.3.app），硬编码路径会失效。
+# 用 xcode-select -p 取当前选中的 Xcode，改名也不会坏；需要覆盖时用前 export DEVELOPER_DIR。
+export DEVELOPER_DIR="${DEVELOPER_DIR:-$(xcode-select -p)}"
 
 WORK="$(mktemp -d)"
 TAG="v${MARKETING}.0"

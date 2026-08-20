@@ -5,6 +5,7 @@ struct ImportSummaryView: View {
     let summary: ImportSummary
     @Environment(\.dismiss) private var dismiss
     @State private var selectedEntry: ImportSummary.Entry?
+    @ScaledMetric(relativeTo: .body) private var iconSize: CGFloat = 28
 
     private var todos: [ImportSummary.Entry] { summary.entries.filter { !$0.isEvent } }
     private var events: [ImportSummary.Entry] { summary.entries.filter(\.isEvent) }
@@ -43,6 +44,8 @@ struct ImportSummaryView: View {
         .padding(20)
         #if os(macOS)
         .frame(width: 460, height: 440)
+        #else
+        .presentationDetents([.medium, .large])
         #endif
         .sheet(item: $selectedEntry) { entry in
             ImportEntryDetailView(entry: entry)
@@ -77,10 +80,10 @@ struct ImportSummaryView: View {
                         .font(.system(size: 12, weight: .semibold))
                         .foregroundStyle(.blue)
                 }
-                .frame(width: 28, height: 28)
+                .frame(width: iconSize, height: iconSize)
             }
             VStack(alignment: .leading, spacing: 1) {
-                Text(e.title).lineLimit(1)
+                Text(e.title).lineLimit(2)
                 if let sub = e.subtitle {
                     Text(sub).font(.caption).foregroundStyle(.secondary).lineLimit(1)
                 }
@@ -99,18 +102,20 @@ struct ImportSummaryView: View {
     private func miniCalendar(month: String?, day: String?) -> some View {
         VStack(spacing: 0) {
             Text(month ?? "—")
-                .font(.system(size: 7, weight: .medium))
+                .font(.system(size: 7, weight: .medium, design: .default))
+                .minimumScaleFactor(0.5)
                 .foregroundStyle(.white)
                 .frame(maxWidth: .infinity)
-                .frame(height: 10)
+                .frame(height: iconSize * 10 / 28)
                 .background(.indigo)
             Text(day ?? "?")
                 .font(.system(size: 13, weight: .semibold))
+                .minimumScaleFactor(0.5)
                 .foregroundStyle(.indigo)
                 .frame(maxWidth: .infinity, maxHeight: .infinity)
                 .background(.indigo.opacity(0.12))
         }
-        .frame(width: 28, height: 28)
+        .frame(width: iconSize, height: iconSize)
         .clipShape(RoundedRectangle(cornerRadius: 6))
     }
 }

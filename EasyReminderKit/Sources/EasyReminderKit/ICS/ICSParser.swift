@@ -10,26 +10,32 @@ public struct ICSParser {
 
     public init() {}
 
-    /// 累计一条 VTODO 里 EventKit 写不进的私有字段（标签/子任务/附件）。
+    /// 累计一个 VTODO / VEVENT 块里 EventKit 写不进的字段（标签/子任务/附件/参与者/例外日期）。
     private struct IgnoredCounter {
         var subtasks = 0
         var tags = 0
         var attachments = 0
+        var attendees = 0
+        var exceptionDates = 0
 
-        mutating func note(property name: String, value: String) {
+        mutating func note(property name: String, value: String, isEvent: Bool) {
             switch name {
-            case "RELATED-TO": subtasks += 1
             case "ATTACH":     attachments += 1
             case "CATEGORIES": tags += value.split(separator: ",").count
+            case "RELATED-TO" where !isEvent: subtasks += 1
+            case "ATTENDEE", "ORGANIZER":     attendees += 1
+            case "EXDATE" where isEvent:      exceptionDates += value.split(separator: ",").count
             default: break
             }
         }
 
         func fields() -> [IgnoredField] {
             var result: [IgnoredField] = []
-            if subtasks > 0    { result.append(.subtasks(subtasks)) }
-            if tags > 0        { result.append(.tags(tags)) }
-            if attachments > 0 { result.append(.attachments(attachments)) }
+            if subtasks > 0       { result.append(.subtasks(subtasks)) }
+            if tags > 0           { result.append(.tags(tags)) }
+            if attachments > 0    { result.append(.attachments(attachments)) }
+            if attendees > 0      { result.append(.attendees(attendees)) }
+            if exceptionDates > 0 { result.append(.exceptionDates(exceptionDates)) }
             return result
         }
     }
@@ -56,7 +62,7 @@ public struct ICSParser {
             case "BEGIN:VTODO":
                 block = [:]; blockIsEvent = false; alarms = []; alarm = nil; ignored = IgnoredCounter()
             case "BEGIN:VEVENT":
-                block = [:]; blockIsEvent = true; alarms = []; alarm = nil
+                block = [:]; blockIsEvent = true; alarms = []; alarm = nil; ignored = IgnoredCounter()
             case "BEGIN:VALARM":
                 alarm = [:]
             case "END:VALARM":
@@ -64,14 +70,34 @@ public struct ICSParser {
                 alarm = nil
             case "END:VTODO":
                 if let t = block, !blockIsEvent {
-                    var item = makeItem(from: t, alarmBlocks: alarms)
-                    item.ignoredFields = ignored.fields()
-                    content.todos.append(item)
+                    if t["RECURRENCE-ID"] != nil {
+                        // 与 VEVENT 同理：重复序列的单次覆盖块导入会变成独立条目，跳过并计数
+                        content.skippedOverrides += 1
+                    } else if t["STATUS"]?.value.uppercased() == "CANCELLED" {
+                        content.skippedCancelled += 1
+                    } else {
+                        var item = makeItem(from: t, alarmBlocks: alarms)
+                        var fields = ignored.fields()
+                        if let tz = unresolvedTZID(in: t) { fields.append(.unresolvedTimeZone(tz)) }
+                        item.ignoredFields = fields
+                        content.todos.append(item)
+                    }
                 }
                 block = nil; alarms = []
             case "END:VEVENT":
                 if let e = block, blockIsEvent {
-                    content.events.append(makeEvent(from: e, alarmBlocks: alarms))
+                    if e["RECURRENCE-ID"] != nil {
+                        // 重复序列中某一次的覆盖块：导入会变成独立的重复条目，跳过并计数
+                        content.skippedOverrides += 1
+                    } else if e["STATUS"]?.value.uppercased() == "CANCELLED" {
+                        content.skippedCancelled += 1
+                    } else {
+                        var item = makeEvent(from: e, alarmBlocks: alarms)
+                        var fields = ignored.fields()
+                        if let tz = unresolvedTZID(in: e) { fields.append(.unresolvedTimeZone(tz)) }
+                        item.ignoredFields = fields
+                        content.events.append(item)
+                    }
                 }
                 block = nil; alarms = []
             default:
@@ -80,7 +106,7 @@ public struct ICSParser {
                     alarm?[name] = (params, value)
                 } else if block != nil {
                     block?[name] = (params, value)
-                    if !blockIsEvent { ignored.note(property: name, value: value) }
+                    ignored.note(property: name, value: value, isEvent: blockIsEvent)
                 }
             }
         }
@@ -114,7 +140,10 @@ public struct ICSParser {
         var params: [String: String] = [:]
         for p in parts.dropFirst() {
             let kv = p.components(separatedBy: "=")
-            if kv.count == 2 { params[kv[0].uppercased()] = kv[1] }
+            // RFC 5545 参数值可带双引号（如 TZID="America/New_York"），统一剥掉
+            if kv.count == 2 {
+                params[kv[0].uppercased()] = kv[1].trimmingCharacters(in: CharacterSet(charactersIn: "\""))
+            }
         }
         return (name, params, value)
     }
@@ -162,14 +191,22 @@ public struct ICSParser {
         // 结束：DTEND 优先；否则 DTSTART + DURATION
         var end = props["DTEND"].flatMap { parseDate($0.value, params: $0.params) }
         if end == nil, let start, let dur = props["DURATION"].flatMap({ parseDuration($0.value) }) {
-            end = start.addingTimeInterval(dur)
+            if isAllDay {
+                // 全天事件的 DURATION 是整天数：按日历天数加——固定 86400 秒跨夏令时会落错日
+                let days = max(1, Int((dur / 86400).rounded()))
+                end = Calendar.current.date(byAdding: .day, value: days, to: start)
+            } else {
+                end = start.addingTimeInterval(dur)
+            }
         }
         let recurrence = props["RRULE"].flatMap { parseRecurrence($0.value) }
         let alarms = alarmBlocks.compactMap { parseAlarm($0) }
+        let timeZone = props["DTSTART"]?.params["TZID"].flatMap { TimeZone(identifier: $0) }
 
         return EventItem(title: title, notes: notes, location: location,
                          startDate: start, endDate: end, isAllDay: isAllDay,
-                         url: url, uid: uid, alarms: alarms, recurrence: recurrence)
+                         url: url, uid: uid, alarms: alarms, recurrence: recurrence,
+                         timeZone: timeZone)
     }
 
     // MARK: - 日期
@@ -185,8 +222,20 @@ public struct ICSParser {
             fmt.dateFormat = "yyyyMMdd'T'HHmmss'Z'"; fmt.timeZone = TimeZone(identifier: "UTC")
             return fmt.date(from: value)
         }
-        fmt.dateFormat = "yyyyMMdd'T'HHmmss"; fmt.timeZone = .current
+        // 带 TZID 参数：按该时区解释；识别不了（如 Windows 时区名）回落设备时区
+        fmt.dateFormat = "yyyyMMdd'T'HHmmss"
+        fmt.timeZone = params["TZID"].flatMap { TimeZone(identifier: $0) } ?? .current
         return fmt.date(from: value)
+    }
+
+    /// DTSTART/DUE/DTEND 里出现了但 TimeZone 认不出的 TZID（如 Outlook 的 Windows 时区名）。
+    private func unresolvedTZID(in props: Props) -> String? {
+        for key in ["DTSTART", "DTEND", "DUE"] {
+            if let tzid = props[key]?.params["TZID"], TimeZone(identifier: tzid) == nil {
+                return tzid
+            }
+        }
+        return nil
     }
 
     // MARK: - VALARM
@@ -257,8 +306,30 @@ public struct ICSParser {
               let freq = RecurrenceRule.Frequency(rawValue: raw.uppercased()) else { return nil }
         var rule = RecurrenceRule(frequency: freq)
         if let i = dict["INTERVAL"], let iv = Int(i) { rule.interval = max(1, iv) }
-        if let c = dict["COUNT"], let cv = Int(c) { rule.count = cv }
+        // EKRecurrenceEnd(occurrenceCount:) 要求 > 0（0 会抛 ObjC 异常，catch 不住），钳位兜底
+        if let c = dict["COUNT"], let cv = Int(c) { rule.count = max(1, cv) }
         if let u = dict["UNTIL"] { rule.until = parseDate(u, params: [:]) }
+        if let v = dict["BYDAY"] {
+            rule.daysOfWeek = v.split(separator: ",").compactMap { parseWeekday(String($0)) }
+        }
+        if let v = dict["BYMONTHDAY"] { rule.daysOfMonth = intList(v) }
+        if let v = dict["BYMONTH"]    { rule.monthsOfYear = intList(v) }
+        if let v = dict["BYSETPOS"]   { rule.setPositions = intList(v) }
         return rule
+    }
+
+    /// BYDAY 单项："MO" / "2TU" / "-1FR" → Weekday(weekday:, weekNumber:)。
+    private func parseWeekday(_ token: String) -> RecurrenceRule.Weekday? {
+        let codes = ["SU": 1, "MO": 2, "TU": 3, "WE": 4, "TH": 5, "FR": 6, "SA": 7]
+        let t = token.trimmingCharacters(in: .whitespaces).uppercased()
+        guard t.count >= 2, let day = codes[String(t.suffix(2))] else { return nil }
+        let prefix = String(t.dropLast(2))
+        if prefix.isEmpty { return .init(weekday: day) }
+        guard let n = Int(prefix) else { return nil }
+        return .init(weekday: day, weekNumber: n)
+    }
+
+    private func intList(_ value: String) -> [Int] {
+        value.split(separator: ",").compactMap { Int($0.trimmingCharacters(in: .whitespaces)) }
     }
 }

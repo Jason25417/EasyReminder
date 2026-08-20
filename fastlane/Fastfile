@@ -1,0 +1,30 @@
+# EasyReminder — App Store 提审自动化（macOS + iOS，appstore 分支）
+# 鉴权用 App Store Connect API Key（.p8 放 ~/.appstoreconnect/private_keys/，不入库）。
+
+ASC_KEY_ID   = ENV["ASC_KEY_ID"]   || "MFLQ74N9N7"
+ASC_ISSUER   = ENV["ASC_ISSUER"]   || "f6b800c3-7e46-4bbb-914e-4c8ca018e8f1"
+ASC_KEY_PATH = ENV["ASC_KEY_PATH"] || File.expand_path("~/.appstoreconnect/private_keys/AuthKey_#{ASC_KEY_ID}.p8")
+BUNDLE_ID    = "com.jason.MyApp"
+
+def asc_token
+  require "spaceship"
+  token = Spaceship::ConnectAPI::Token.create(
+    key_id: ASC_KEY_ID, issuer_id: ASC_ISSUER, filepath: ASC_KEY_PATH
+  )
+  Spaceship::ConnectAPI.token = token
+  token
+end
+
+# 只读：验证 key 权限 + 列出 app + 查本 app 是否已建记录。
+lane :asc_check do
+  asc_token
+  apps = Spaceship::ConnectAPI::App.all
+  UI.message("账号下共 #{apps.size} 个 app：")
+  apps.each { |a| UI.message("  #{a.bundle_id}  |  #{a.name}") }
+  target = apps.find { |a| a.bundle_id == BUNDLE_ID }
+  if target
+    UI.success("已存在 app 记录：#{target.name}  id=#{target.id}")
+  else
+    UI.important("#{BUNDLE_ID} 尚无 app 记录（需创建）")
+  end
+end

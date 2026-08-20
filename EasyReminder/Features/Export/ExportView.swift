@@ -14,7 +14,7 @@ struct ExportView: View {
 
     var body: some View {
         VStack(spacing: 16) {
-            Text("从提醒事项导出为 ICS")
+            Text("从提醒事项 / 日历导出为 ICS")
                 .font(.headline)
 
             // macOS 与 iPad(regular) 横向双栏（目标 | 项目）；iPhone 窄屏竖排。
@@ -23,8 +23,19 @@ struct ExportView: View {
                 itemsPane
             }
 
-            Button("导出为 ICS…") { Task { await viewModel.prepareExport() } }
-                .buttonStyle(.borderedProminent)
+            HStack(spacing: 12) {
+                Button("导出为 ICS…") { Task { await viewModel.prepareExport() } }
+                    .buttonStyle(.borderedProminent)
+                #if os(iOS)
+                // iOS 上「存到文件再自己去分享」太绕：直接给分享入口（隔空投送、信息、邮件…）
+                if let text = viewModel.currentExportText() {
+                    ShareLink(item: ICSFile(text: text, filename: viewModel.exportFilename),
+                              preview: SharePreview(viewModel.exportFilename)) {
+                        Label("分享…", systemImage: "square.and.arrow.up")
+                    }
+                }
+                #endif
+            }
 
             Text(viewModel.status)
                 .foregroundStyle(.secondary)
@@ -37,6 +48,8 @@ struct ExportView: View {
         #endif
         .task { await viewModel.load() }
         .onChange(of: viewModel.selectedID) { Task { await viewModel.loadItems() } }
+        .onChange(of: viewModel.rangeStart) { Task { await viewModel.loadItems() } }
+        .onChange(of: viewModel.rangeEnd) { Task { await viewModel.loadItems() } }
         .fileExporter(isPresented: $viewModel.showingExporter,
                       document: viewModel.document,
                       contentType: Self.icsType,
@@ -56,21 +69,43 @@ struct ExportView: View {
         #endif
     }
 
-    // 左：目标列表
+    // 左：导出目标（提醒列表 / 日历 分区）
     private var targetPane: some View {
-        VStack(alignment: .leading, spacing: 6) {
-            Text("目标列表").font(.subheadline).foregroundStyle(.secondary)
-            Picker("目标列表", selection: $viewModel.selectedID) {
-                ForEach(viewModel.targets) { target in
-                    Text(target.title).tag(Optional(target.id))
+        VStack(alignment: .leading, spacing: 12) {
+            VStack(alignment: .leading, spacing: 6) {
+                Text("导出目标").font(.subheadline).foregroundStyle(.secondary)
+                Picker("导出目标", selection: $viewModel.selectedID) {
+                    Section("提醒事项") {
+                        ForEach(viewModel.reminderTargets) { target in
+                            Text(target.title).tag(Optional(target.id))
+                        }
+                    }
+                    if !viewModel.calendarTargets.isEmpty {
+                        Section("日历") {
+                            ForEach(viewModel.calendarTargets) { target in
+                                Text(target.title).tag(Optional(target.id))
+                            }
+                        }
+                    }
                 }
+                .labelsHidden()
+                #if os(macOS)
+                .frame(width: 200)
+                #else
+                .frame(maxWidth: hSizeClass == .regular ? 280 : .infinity, alignment: .leading)
+                #endif
             }
-            .labelsHidden()
-            #if os(macOS)
-            .frame(width: 200)
-            #else
-            .frame(maxWidth: hSizeClass == .regular ? 280 : .infinity, alignment: .leading)
-            #endif
+
+            if viewModel.isCalendarTarget {
+                VStack(alignment: .leading, spacing: 6) {
+                    Text("时间范围").font(.subheadline).foregroundStyle(.secondary)
+                    DatePicker("从", selection: $viewModel.rangeStart, displayedComponents: .date)
+                    DatePicker("到", selection: $viewModel.rangeEnd, displayedComponents: .date)
+                }
+                #if os(macOS)
+                .frame(width: 200)
+                #endif
+            }
         }
     }
 
@@ -86,11 +121,11 @@ struct ExportView: View {
                 ))
                 #if os(macOS)
                 .toggleStyle(.checkbox)
+                .font(.caption)
                 #else
                 .toggleStyle(.button)
                 #endif
-                .font(.caption)
-                .disabled(viewModel.items.isEmpty)
+                .disabled(viewModel.isCalendarTarget ? viewModel.eventItems.isEmpty : viewModel.items.isEmpty)
             }
             itemList
         }
@@ -98,29 +133,24 @@ struct ExportView: View {
 
     private var itemList: some View {
         Group {
-            if viewModel.items.isEmpty {
-                ContentUnavailableView("这个列表没有提醒", systemImage: "tray")
+            if viewModel.isCalendarTarget ? viewModel.eventItems.isEmpty : viewModel.items.isEmpty {
+                ContentUnavailableView(viewModel.isCalendarTarget
+                                       ? "这个日历在所选范围内没有事件"
+                                       : "这个列表没有提醒",
+                                       systemImage: "tray")
             } else {
                 ScrollView {
                     LazyVStack(alignment: .leading, spacing: 0) {
-                        ForEach(viewModel.items) { item in
-                            HStack(alignment: .top, spacing: 8) {
-                                Image(systemName: viewModel.selectedItemIDs.contains(item.id)
-                                      ? "checkmark.circle.fill" : "circle")
-                                    .foregroundStyle(viewModel.selectedItemIDs.contains(item.id) ? .blue : .secondary)
-                                VStack(alignment: .leading, spacing: 2) {
-                                    Text(item.title).lineLimit(1)
-                                    if let due = item.dueDate {
-                                        Text(Self.dateText(due)).font(.caption).foregroundStyle(.secondary)
-                                    }
-                                }
-                                Spacer()
+                        if viewModel.isCalendarTarget {
+                            ForEach(viewModel.eventItems) { event in
+                                row(id: event.id, title: event.title, subtitle: Self.subtitle(for: event))
+                                Divider()
                             }
-                            .padding(.vertical, 5)
-                            .padding(.horizontal, 6)
-                            .contentShape(Rectangle())
-                            .onTapGesture { viewModel.toggle(item.id) }
-                            Divider()
+                        } else {
+                            ForEach(viewModel.items) { item in
+                                row(id: item.id, title: item.title, subtitle: item.dueDate.map(Self.dateText))
+                                Divider()
+                            }
                         }
                     }
                 }
@@ -134,7 +164,55 @@ struct ExportView: View {
         .overlay(RoundedRectangle(cornerRadius: 6).stroke(.quaternary))
     }
 
+    private func row(id: UUID, title: String, subtitle: String?) -> some View {
+        Button {
+            viewModel.toggle(id)
+        } label: {
+            HStack(alignment: .center, spacing: 8) {
+                Image(systemName: viewModel.isSelected(id) ? "checkmark.circle.fill" : "circle")
+                    .foregroundStyle(viewModel.isSelected(id) ? Color.accentColor : Color.secondary)
+                VStack(alignment: .leading, spacing: 2) {
+                    Text(title).lineLimit(2)
+                    if let subtitle {
+                        Text(subtitle).font(.caption).foregroundStyle(.secondary).lineLimit(1)
+                    }
+                }
+                Spacer(minLength: 0)
+            }
+            .padding(.vertical, 5)
+            .padding(.horizontal, 6)
+            .frame(minHeight: Self.rowMinHeight)
+            .contentShape(Rectangle())
+        }
+        .buttonStyle(.plain)
+        .accessibilityAddTraits(viewModel.isSelected(id) ? [.isSelected] : [])
+        #if os(iOS)
+        .hoverEffect(.highlight)
+        #endif
+    }
+
+    // 触控端行高不低于 44pt（HIG）；桌面保持紧凑
+    private static var rowMinHeight: CGFloat? {
+        #if os(iOS)
+        44
+        #else
+        nil
+        #endif
+    }
+
     private static var icsType: UTType { UTType(filenameExtension: "ics") ?? .text }
+
+    private static func subtitle(for event: EventItem) -> String? {
+        guard let start = event.startDate else { return nil }
+        var parts: [String] = []
+        if event.isAllDay {
+            parts.append("\(Self.dayText(start)) · " + String(localized: "全天"))
+        } else {
+            parts.append(Self.dateText(start))
+        }
+        if event.recurrence != nil { parts.append(String(localized: "重复")) }
+        return parts.joined(separator: " · ")
+    }
 
     private static func dateText(_ d: Date) -> String {
         let f = DateFormatter()
@@ -142,4 +220,28 @@ struct ExportView: View {
         f.timeStyle = .short
         return f.string(from: d)
     }
+
+    private static func dayText(_ d: Date) -> String {
+        let f = DateFormatter()
+        f.dateStyle = .medium
+        f.timeStyle = .none
+        return f.string(from: d)
+    }
 }
+
+#if os(iOS)
+/// iOS 分享用的 .ics 临时文件（分享时才落盘）。
+private struct ICSFile: Transferable {
+    let text: String
+    let filename: String
+
+    // Transferable 的协议要求是 nonisolated 的；默认 MainActor 隔离下必须显式标注
+    nonisolated static var transferRepresentation: some TransferRepresentation {
+        FileRepresentation(exportedContentType: UTType(filenameExtension: "ics") ?? .plainText) { file in
+            let url = FileManager.default.temporaryDirectory.appendingPathComponent(file.filename)
+            try file.text.write(to: url, atomically: true, encoding: .utf8)
+            return SentTransferredFile(url)
+        }
+    }
+}
+#endif

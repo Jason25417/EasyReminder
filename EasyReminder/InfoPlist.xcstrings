@@ -1,0 +1,69 @@
+{
+  "sourceLanguage" : "zh-Hans",
+  "strings" : {
+    "NSRemindersFullAccessUsageDescription" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "用于把导入的待办写入你的提醒事项，以及将提醒导出为 ICS 文件。"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Used to add imported to-dos to your Reminders and to export reminders as an ICS file."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Se usa para añadir las tareas importadas a Recordatorios y para exportar recordatorios como archivo ICS."
+          }
+        }
+      }
+    },
+    "NSCalendarsFullAccessUsageDescription" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "用于把导入的 ICS 事件（VEVENT）写入你的日历，以及读取日历事件导出为 ICS 文件。"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Used to add imported ICS events (VEVENT) to your calendars and to read calendar events for exporting as an ICS file."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Se usa para añadir los eventos ICS importados (VEVENT) a tus calendarios y para leer eventos del calendario al exportarlos como archivo ICS."
+          }
+        }
+      }
+    },
+    "iCalendar 文件" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "iCalendar File"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Archivo iCalendar"
+          }
+        }
+      }
+    }
+  },
+  "version" : "1.0"
+}

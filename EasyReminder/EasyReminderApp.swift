@@ -27,11 +27,11 @@ struct EasyReminderApp: App {
         WindowGroup {
             #if canImport(Sparkle)
             RootView(importVM: ImportViewModel(service: remindersService, calendarService: calendarService),
-                     exportVM: ExportViewModel(service: remindersService),
+                     exportVM: ExportViewModel(service: remindersService, calendarService: calendarService),
                      updater: updaterController.updater)
             #else
             RootView(importVM: ImportViewModel(service: remindersService, calendarService: calendarService),
-                     exportVM: ExportViewModel(service: remindersService))
+                     exportVM: ExportViewModel(service: remindersService, calendarService: calendarService))
             #endif
         }
         #if canImport(Sparkle)

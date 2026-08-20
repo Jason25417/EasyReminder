@@ -1,658 +1,50 @@
 {
   "sourceLanguage": "zh-Hans",
   "strings": {
-    "• %@": {
+    "%@ 截止": {
       "localizations": {
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "• %@"
+            "value": "Due %@"
           }
         },
         "es": {
           "stringUnit": {
             "state": "translated",
-            "value": "• %@"
+            "value": "Vence %@"
           }
         }
       }
     },
-    "v%@": {
+    "%lld 个事件 → %@": {
       "localizations": {
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "v%@"
+            "value": "%lld events → %@"
           }
         },
         "es": {
           "stringUnit": {
             "state": "translated",
-            "value": "v%@"
+            "value": "%lld eventos → %@"
           }
         }
       }
     },
-    "ICS 导入到提醒事项": {
+    "%lld 个参与者": {
       "localizations": {
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "Import ICS into Reminders"
+            "value": "%lld attendees"
           }
         },
         "es": {
           "stringUnit": {
             "state": "translated",
-            "value": "Importar ICS a Recordatorios"
-          }
-        }
-      }
-    },
-    "导入": {
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Import"
-          }
-        },
-        "es": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Importar"
-          }
-        }
-      }
-    },
-    "导出": {
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Export"
-          }
-        },
-        "es": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Exportar"
-          }
-        }
-      }
-    },
-    "从提醒事项导出为 ICS": {
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Export Reminders to ICS"
-          }
-        },
-        "es": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Exportar Recordatorios a ICS"
-          }
-        }
-      }
-    },
-    "选择 .ics 文件导入（可多选）": {
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Choose .ics file(s) to import"
-          }
-        },
-        "es": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Elegir archivos .ics para importar"
-          }
-        }
-      }
-    },
-    "目标列表": {
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Target list"
-          }
-        },
-        "es": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Lista de destino"
-          }
-        }
-      }
-    },
-    "导出项目": {
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Items to export"
-          }
-        },
-        "es": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Elementos a exportar"
-          }
-        }
-      }
-    },
-    "全选": {
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Select all"
-          }
-        },
-        "es": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Seleccionar todo"
-          }
-        }
-      }
-    },
-    "这个列表没有提醒": {
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "No reminders in this list"
-          }
-        },
-        "es": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "No hay recordatorios en esta lista"
-          }
-        }
-      }
-    },
-    "导出为 ICS…": {
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Export as ICS…"
-          }
-        },
-        "es": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Exportar como ICS…"
-          }
-        }
-      }
-    },
-    "导入到哪个列表？": {
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Import into which list?"
-          }
-        },
-        "es": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "¿A qué lista importar?"
-          }
-        }
-      }
-    },
-    "默认列表": {
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Default list"
-          }
-        },
-        "es": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Lista predeterminada"
-          }
-        }
-      }
-    },
-    "新建列表…": {
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "New list…"
-          }
-        },
-        "es": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Nueva lista…"
-          }
-        }
-      }
-    },
-    "新列表名": {
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "New list name"
-          }
-        },
-        "es": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Nombre de la lista"
-          }
-        }
-      }
-    },
-    "取消": {
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Cancel"
-          }
-        },
-        "es": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Cancelar"
-          }
-        }
-      }
-    },
-    "已取消导入": {
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Import canceled"
-          }
-        },
-        "es": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Importación cancelada"
-          }
-        }
-      }
-    },
-    "没有要导入的条目": {
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Nothing to import"
-          }
-        },
-        "es": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Nada que importar"
-          }
-        }
-      }
-    },
-    "检测到重复导入": {
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Duplicate import detected"
-          }
-        },
-        "es": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Importación duplicada detectada"
-          }
-        }
-      }
-    },
-    "有 %lld 条之前导入过。": {
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "%lld item(s) were imported before."
-          }
-        },
-        "es": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "%lld elemento(s) ya se importaron antes."
-          }
-        }
-      }
-    },
-    "全部导入": {
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Import all"
-          }
-        },
-        "es": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Importar todo"
-          }
-        }
-      }
-    },
-    "只导入新的 %lld 条": {
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Import only %lld new"
-          }
-        },
-        "es": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Importar solo %lld nuevos"
-          }
-        }
-      }
-    },
-    "检查更新…": {
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Check for Updates…"
-          }
-        },
-        "es": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Buscar actualizaciones…"
-          }
-        }
-      }
-    },
-    "更新日志": {
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Changelog"
-          }
-        },
-        "es": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Registro de cambios"
-          }
-        }
-      }
-    },
-    "完成": {
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Done"
-          }
-        },
-        "es": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Hecho"
-          }
-        }
-      }
-    },
-    "查看更新日志": {
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "View changelog"
-          }
-        },
-        "es": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Ver registro de cambios"
-          }
-        }
-      }
-    },
-    "打开下载页": {
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Open download page"
-          }
-        },
-        "es": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Abrir página de descarga"
-          }
-        }
-      }
-    },
-    "有新版 v%@ ↗": {
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "New version v%@ ↗"
-          }
-        },
-        "es": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Nueva versión v%@ ↗"
-          }
-        }
-      }
-    },
-    "全部（所有列表）": {
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "All (all lists)"
-          }
-        },
-        "es": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Todo (todas las listas)"
-          }
-        }
-      }
-    },
-    "今天": {
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Today"
-          }
-        },
-        "es": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Hoy"
-          }
-        }
-      }
-    },
-    "计划": {
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Scheduled"
-          }
-        },
-        "es": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Programado"
-          }
-        }
-      }
-    },
-    "已完成": {
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Completed"
-          }
-        },
-        "es": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Completado"
-          }
-        }
-      }
-    },
-    "请选择一个或多个 .ics 文件导入，或用本 App 打开 .ics 文件": {
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Choose one or more .ics files to import, or open an .ics file with this app."
-          }
-        },
-        "es": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Elige uno o más archivos .ics para importar, o abre un archivo .ics con esta app."
-          }
-        }
-      }
-    },
-    "没解析到任何 VTODO 条目（共 %lld 个文件）": {
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "No VTODO items found (%lld file(s))."
-          }
-        },
-        "es": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "No se encontraron elementos VTODO (%lld archivo(s))."
-          }
-        }
-      }
-    },
-    "成功导入 %lld 条到列表「%@」": {
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Imported %lld item(s) into list “%@”."
-          }
-        },
-        "es": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Se importaron %lld elemento(s) a la lista «%@»."
-          }
-        }
-      }
-    },
-    "成功导入 %lld 条到默认列表": {
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Imported %lld item(s) into the default list."
-          }
-        },
-        "es": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Se importaron %lld elemento(s) a la lista predeterminada."
-          }
-        }
-      }
-    },
-    "（共 %lld 个文件）": {
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "(%lld files)"
-          }
-        },
-        "es": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "(%lld archivos)"
-          }
-        }
-      }
-    },
-    "失败：提醒事项权限被拒绝": {
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Failed: Reminders access denied."
-          }
-        },
-        "es": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Error: acceso a Recordatorios denegado."
-          }
-        }
-      }
-    },
-    "失败：没有可用的提醒列表，请先在提醒事项里建一个列表": {
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Failed: no reminder list available. Create one in Reminders first."
-          }
-        },
-        "es": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Error: no hay lista disponible. Crea una en Recordatorios primero."
-          }
-        }
-      }
-    },
-    "失败：%@": {
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Failed: %@"
-          }
-        },
-        "es": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Error: %@"
+            "value": "%lld participantes"
           }
         }
       }
@@ -689,6 +81,22 @@
         }
       }
     },
+    "%lld 个重复例外日": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%lld recurrence exception dates"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%lld fechas de excepción de repetición"
+          }
+        }
+      }
+    },
     "%lld 个附件": {
       "localizations": {
         "en": {
@@ -705,242 +113,50 @@
         }
       }
     },
-    "、": {
+    "%lld 分钟": {
       "localizations": {
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": ", "
+            "value": "%lld min"
           }
         },
         "es": {
           "stringUnit": {
             "state": "translated",
-            "value": ", "
+            "value": "%lld min"
           }
         }
       }
     },
-    "注意：%lld 条含本 App 写不进的字段（%@），已忽略": {
+    "%lld 天": {
       "localizations": {
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "Note: %lld item(s) had fields this app can’t write (%@); ignored."
+            "value": "%lld d"
           }
         },
         "es": {
           "stringUnit": {
             "state": "translated",
-            "value": "Nota: %lld elemento(s) tenían campos que esta app no puede escribir (%@); ignorados."
+            "value": "%lld d"
           }
         }
       }
     },
-    "选择要导出的列表": {
+    "%lld 小时": {
       "localizations": {
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "Choose a list to export"
+            "value": "%lld h"
           }
         },
         "es": {
           "stringUnit": {
             "state": "translated",
-            "value": "Elige una lista para exportar"
-          }
-        }
-      }
-    },
-    "提醒事项权限被拒绝": {
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Reminders access denied"
-          }
-        },
-        "es": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Acceso a Recordatorios denegado"
-          }
-        }
-      }
-    },
-    "加载列表失败：%@": {
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Failed to load lists: %@"
-          }
-        },
-        "es": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Error al cargar listas: %@"
-          }
-        }
-      }
-    },
-    "「%@」里没有条目": {
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "No items in “%@”"
-          }
-        },
-        "es": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "No hay elementos en «%@»"
-          }
-        }
-      }
-    },
-    "共 %lld 条，默认全选": {
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "%lld item(s), all selected by default"
-          }
-        },
-        "es": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "%lld elemento(s), todos seleccionados"
-          }
-        }
-      }
-    },
-    "读取条目失败：%@": {
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Failed to read items: %@"
-          }
-        },
-        "es": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Error al leer elementos: %@"
-          }
-        }
-      }
-    },
-    "请先选择一个列表": {
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Choose a list first"
-          }
-        },
-        "es": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Elige una lista primero"
-          }
-        }
-      }
-    },
-    "请至少勾选一条要导出的项目": {
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Select at least one item to export"
-          }
-        },
-        "es": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Selecciona al menos un elemento para exportar"
-          }
-        }
-      }
-    },
-    "已准备好 %lld 条，请选择保存位置": {
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "%lld item(s) ready. Choose where to save."
-          }
-        },
-        "es": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "%lld elemento(s) listos. Elige dónde guardar."
-          }
-        }
-      }
-    },
-    "已导出到：%@": {
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Exported to: %@"
-          }
-        },
-        "es": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Exportado a: %@"
-          }
-        }
-      }
-    },
-    "保存失败：%@": {
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Save failed: %@"
-          }
-        },
-        "es": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Error al guardar: %@"
-          }
-        }
-      }
-    },
-    "没解析到任何待办或事件（共 %lld 个文件）": {
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "No to-dos or events found (%lld file(s))"
-          }
-        },
-        "es": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "No se encontraron tareas ni eventos (%lld archivo(s))"
-          }
-        }
-      }
-    },
-    "列表「%@」": {
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "list “%@”"
-          }
-        },
-        "es": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "lista “%@”"
+            "value": "%lld h"
           }
         }
       }
@@ -961,98 +177,146 @@
         }
       }
     },
-    "待办失败：提醒事项权限被拒绝": {
+    "ICS 文件": {
       "localizations": {
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "To-dos failed: Reminders access denied"
+            "value": "ICS file"
           }
         },
         "es": {
           "stringUnit": {
             "state": "translated",
-            "value": "Tareas: acceso a Recordatorios denegado"
+            "value": "Archivo ICS"
           }
         }
       }
     },
-    "待办失败：没有可用的提醒列表，请先在提醒事项里建一个列表": {
+    "v%@": {
       "localizations": {
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "To-dos failed: no Reminders list available — create one in Reminders first"
+            "value": "v%@"
           }
         },
         "es": {
           "stringUnit": {
             "state": "translated",
-            "value": "Tareas: no hay lista disponible; crea una en Recordatorios primero"
+            "value": "v%@"
           }
         }
       }
     },
-    "待办失败：%@": {
+    "• %@": {
       "localizations": {
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "To-dos failed: %@"
+            "value": "• %@"
           }
         },
         "es": {
           "stringUnit": {
             "state": "translated",
-            "value": "Tareas fallidas: %@"
+            "value": "• %@"
           }
         }
       }
     },
-    "日历「%@」": {
+    "、": {
       "localizations": {
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "calendar “%@”"
+            "value": ", "
           }
         },
         "es": {
           "stringUnit": {
             "state": "translated",
-            "value": "calendario “%@”"
+            "value": ", "
           }
         }
       }
     },
-    "默认日历": {
+    "「%@」在所选时间范围内没有事件": {
       "localizations": {
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "Default Calendar"
+            "value": "No events in “%@” within the selected date range"
           }
         },
         "es": {
           "stringUnit": {
             "state": "translated",
-            "value": "Calendario predeterminado"
+            "value": "No hay eventos en “%@” dentro del rango seleccionado"
           }
         }
       }
     },
-    "%lld 个事件 → %@": {
+    "「%@」里没有条目": {
       "localizations": {
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "%lld events → %@"
+            "value": "No items in “%@”"
           }
         },
         "es": {
           "stringUnit": {
             "state": "translated",
-            "value": "%lld eventos → %@"
+            "value": "No hay elementos en «%@»"
+          }
+        }
+      }
+    },
+    "中": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Medium"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Media"
+          }
+        }
+      }
+    },
+    "事件 → 日历": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Events → Calendar"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Eventos → Calendario"
+          }
+        }
+      }
+    },
+    "事件失败：%@": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Events failed: %@"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Eventos fallidos: %@"
           }
         }
       }
@@ -1089,82 +353,146 @@
         }
       }
     },
-    "事件失败：%@": {
+    "事件（%lld）": {
       "localizations": {
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "Events failed: %@"
+            "value": "Events (%lld)"
           }
         },
         "es": {
           "stringUnit": {
             "state": "translated",
-            "value": "Eventos fallidos: %@"
+            "value": "Eventos (%lld)"
           }
         }
       }
     },
-    "；": {
+    "今天": {
       "localizations": {
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "; "
+            "value": "Today"
           }
         },
         "es": {
           "stringUnit": {
             "state": "translated",
-            "value": "; "
+            "value": "Hoy"
           }
         }
       }
     },
-    "成功导入：%@": {
+    "从": {
       "localizations": {
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "Imported: %@"
+            "value": "From"
           }
         },
         "es": {
           "stringUnit": {
             "state": "translated",
-            "value": "Importado: %@"
+            "value": "Desde"
           }
         }
       }
     },
-    "提醒×%lld": {
+    "从提醒事项 / 日历导出为 ICS": {
       "localizations": {
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "Alerts ×%lld"
+            "value": "Export ICS from Reminders / Calendar"
           }
         },
         "es": {
           "stringUnit": {
             "state": "translated",
-            "value": "Avisos ×%lld"
+            "value": "Exportar ICS desde Recordatorios / Calendario"
           }
         }
       }
     },
-    "网址": {
+    "从提醒事项导出 ICS": {
       "localizations": {
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "URL"
+            "value": "Export ICS from Reminders"
           }
         },
         "es": {
           "stringUnit": {
             "state": "translated",
-            "value": "URL"
+            "value": "Exportar ICS desde Recordatorios"
+          }
+        }
+      }
+    },
+    "从日历导出 ICS": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Export ICS from Calendar"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Exportar ICS desde Calendario"
+          }
+        }
+      }
+    },
+    "优先级": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Priority"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Prioridad"
+          }
+        }
+      }
+    },
+    "低": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Low"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Baja"
+          }
+        }
+      }
+    },
+    "保存失败：%@": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Save failed: %@"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Error al guardar: %@"
           }
         }
       }
@@ -1185,130 +513,434 @@
         }
       }
     },
-    "每天重复": {
+    "全选": {
       "localizations": {
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "Repeats daily"
+            "value": "Select all"
           }
         },
         "es": {
           "stringUnit": {
             "state": "translated",
-            "value": "Se repite a diario"
+            "value": "Seleccionar todo"
           }
         }
       }
     },
-    "每 %lld 天重复": {
+    "全部": {
       "localizations": {
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "Repeats every %lld days"
+            "value": "All"
           }
         },
         "es": {
           "stringUnit": {
             "state": "translated",
-            "value": "Se repite cada %lld días"
+            "value": "Todo"
           }
         }
       }
     },
-    "每周重复": {
+    "全部导入": {
       "localizations": {
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "Repeats weekly"
+            "value": "Import all"
           }
         },
         "es": {
           "stringUnit": {
             "state": "translated",
-            "value": "Se repite semanalmente"
+            "value": "Importar todo"
           }
         }
       }
     },
-    "每 %lld 周重复": {
+    "全部（所有列表）": {
       "localizations": {
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "Repeats every %lld weeks"
+            "value": "All (all lists)"
           }
         },
         "es": {
           "stringUnit": {
             "state": "translated",
-            "value": "Se repite cada %lld semanas"
+            "value": "Todo (todas las listas)"
           }
         }
       }
     },
-    "每月重复": {
+    "共 %lld 个事件，默认全选（重复事件导出为规则）": {
       "localizations": {
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "Repeats monthly"
+            "value": "%lld events, all selected by default (repeating events export as rules)"
           }
         },
         "es": {
           "stringUnit": {
             "state": "translated",
-            "value": "Se repite mensualmente"
+            "value": "%lld eventos, todos seleccionados por defecto (los eventos repetidos se exportan como reglas)"
           }
         }
       }
     },
-    "每 %lld 个月重复": {
+    "共 %lld 条，默认全选": {
       "localizations": {
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "Repeats every %lld months"
+            "value": "%lld item(s), all selected by default"
           }
         },
         "es": {
           "stringUnit": {
             "state": "translated",
-            "value": "Se repite cada %lld meses"
+            "value": "%lld elemento(s), todos seleccionados"
           }
         }
       }
     },
-    "每年重复": {
+    "关闭": {
       "localizations": {
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "Repeats yearly"
+            "value": "Close"
           }
         },
         "es": {
           "stringUnit": {
             "state": "translated",
-            "value": "Se repite anualmente"
+            "value": "Cerrar"
           }
         }
       }
     },
-    "每 %lld 年重复": {
+    "准时": {
       "localizations": {
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "Repeats every %lld years"
+            "value": "At time of event"
           }
         },
         "es": {
           "stringUnit": {
             "state": "translated",
-            "value": "Se repite cada %lld años"
+            "value": "A la hora del evento"
+          }
+        }
+      }
+    },
+    "分享…": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Share…"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Compartir…"
+          }
+        }
+      }
+    },
+    "列表「%@」": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "list “%@”"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "lista “%@”"
+          }
+        }
+      }
+    },
+    "到": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "To"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Hasta"
+          }
+        }
+      }
+    },
+    "到达「%@」时": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "On arriving at “%@”"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Al llegar a “%@”"
+          }
+        }
+      }
+    },
+    "加载列表失败：%@": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Failed to load lists: %@"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Error al cargar listas: %@"
+          }
+        }
+      }
+    },
+    "去向": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Imported to"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Importado a"
+          }
+        }
+      }
+    },
+    "取消": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Cancel"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Cancelar"
+          }
+        }
+      }
+    },
+    "只导入新的 %lld 条": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Import only %lld new"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Importar solo %lld nuevos"
+          }
+        }
+      }
+    },
+    "在 GitHub 查看最新版本": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "View the latest release on GitHub"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ver la última versión en GitHub"
+          }
+        }
+      }
+    },
+    "地点": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Location"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ubicación"
+          }
+        }
+      }
+    },
+    "备注": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Notes"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Notas"
+          }
+        }
+      }
+    },
+    "失败：%@": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Failed: %@"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Error: %@"
+          }
+        }
+      }
+    },
+    "失败：提醒事项权限被拒绝": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Failed: Reminders access denied."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Error: acceso a Recordatorios denegado."
+          }
+        }
+      }
+    },
+    "失败：没有可用的提醒列表，请先在提醒事项里建一个列表": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Failed: no reminder list available. Create one in Reminders first."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Error: no hay lista disponible. Crea una en Recordatorios primero."
+          }
+        }
+      }
+    },
+    "完成": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Done"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Hecho"
+          }
+        }
+      }
+    },
+    "导入": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Import"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Importar"
+          }
+        }
+      }
+    },
+    "导入 ICS": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Import ICS"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Importar ICS"
+          }
+        }
+      }
+    },
+    "导入 ICS 到提醒事项 / 日历": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Import ICS into Reminders / Calendar"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Importar ICS a Recordatorios / Calendario"
+          }
+        }
+      }
+    },
+    "导入到哪个列表？": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Import into which list?"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "¿A qué lista importar?"
           }
         }
       }
@@ -1329,6 +961,294 @@
         }
       }
     },
+    "导入完成": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Import Complete"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Importación completada"
+          }
+        }
+      }
+    },
+    "导出": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Export"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Exportar"
+          }
+        }
+      }
+    },
+    "导出 ICS": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Export ICS"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Exportar ICS"
+          }
+        }
+      }
+    },
+    "导出为 ICS…": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Export as ICS…"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Exportar como ICS…"
+          }
+        }
+      }
+    },
+    "导出日历 ICS": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Export Calendar ICS"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Exportar ICS de Calendario"
+          }
+        }
+      }
+    },
+    "导出未来天数（从今天起）": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Days ahead to export (starting today)"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Días futuros a exportar (desde hoy)"
+          }
+        }
+      }
+    },
+    "导出目标": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Export source"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Origen de exportación"
+          }
+        }
+      }
+    },
+    "导出范围": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Export scope"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Alcance de exportación"
+          }
+        }
+      }
+    },
+    "导出项目": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Items to export"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Elementos a exportar"
+          }
+        }
+      }
+    },
+    "已准备好 %lld 条，请选择保存位置": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%lld item(s) ready. Choose where to save."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%lld elemento(s) listos. Elige dónde guardar."
+          }
+        }
+      }
+    },
+    "已取消导入": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Import canceled"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Importación cancelada"
+          }
+        }
+      }
+    },
+    "已完成": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Completed"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Completado"
+          }
+        }
+      }
+    },
+    "已导出到：%@": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Exported to: %@"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Exportado a: %@"
+          }
+        }
+      }
+    },
+    "已跳过 %lld 个对重复条目单次的修改（暂不支持，避免生成重复内容）": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Skipped %lld single-occurrence changes to repeating items (not yet supported; avoids creating duplicates)"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Se omitieron %lld modificaciones de una sola repetición de elementos repetidos (aún no compatible; evita duplicados)"
+          }
+        }
+      }
+    },
+    "已跳过 %lld 个已取消的条目": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Skipped %lld cancelled items"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Se omitieron %lld elementos cancelados"
+          }
+        }
+      }
+    },
+    "延后 %@": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%@ after"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%@ después"
+          }
+        }
+      }
+    },
+    "开始": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Starts"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Comienza"
+          }
+        }
+      }
+    },
+    "待办": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "To-do"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Tarea"
+          }
+        }
+      }
+    },
     "待办 → 提醒事项列表": {
       "localizations": {
         "en": {
@@ -1345,34 +1265,338 @@
         }
       }
     },
-    "事件 → 日历": {
+    "待办失败：%@": {
       "localizations": {
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "Events → Calendar"
+            "value": "To-dos failed: %@"
           }
         },
         "es": {
           "stringUnit": {
             "state": "translated",
-            "value": "Eventos → Calendario"
+            "value": "Tareas fallidas: %@"
           }
         }
       }
     },
-    "目标日历": {
+    "待办失败：提醒事项权限被拒绝": {
       "localizations": {
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "Target calendar"
+            "value": "To-dos failed: Reminders access denied"
           }
         },
         "es": {
           "stringUnit": {
             "state": "translated",
-            "value": "Calendario de destino"
+            "value": "Tareas: acceso a Recordatorios denegado"
+          }
+        }
+      }
+    },
+    "待办失败：没有可用的提醒列表，请先在提醒事项里建一个列表": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "To-dos failed: no Reminders list available — create one in Reminders first"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Tareas: no hay lista disponible; crea una en Recordatorios primero"
+          }
+        }
+      }
+    },
+    "待办（%lld）": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "To-dos (%lld)"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Tareas (%lld)"
+          }
+        }
+      }
+    },
+    "待办（VTODO）进「提醒事项」，日历事件（VEVENT）进「日历」": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "To-dos (VTODO) go to Reminders; calendar events (VEVENT) go to Calendar"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Las tareas (VTODO) van a Recordatorios; los eventos (VEVENT) van a Calendario"
+          }
+        }
+      }
+    },
+    "成功导入 %lld 条到列表「%@」": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Imported %lld item(s) into list “%@”."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Se importaron %lld elemento(s) a la lista «%@»."
+          }
+        }
+      }
+    },
+    "成功导入 %lld 条到默认列表": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Imported %lld item(s) into the default list."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Se importaron %lld elemento(s) a la lista predeterminada."
+          }
+        }
+      }
+    },
+    "成功导入：%@": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Imported: %@"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Importado: %@"
+          }
+        }
+      }
+    },
+    "截止": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Due"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Vence"
+          }
+        }
+      }
+    },
+    "打开下载页": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Open download page"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Abrir página de descarga"
+          }
+        }
+      }
+    },
+    "把 .ics 文件里的待办（VTODO）导入「提醒事项」，日历事件（VEVENT）导入「日历」。": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Imports to-dos (VTODO) from an .ics file into Reminders and calendar events (VEVENT) into Calendar."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Importa las tareas (VTODO) de un archivo .ics a Recordatorios y los eventos (VEVENT) a Calendario."
+          }
+        }
+      }
+    },
+    "把「提醒事项」里的待办按范围导出为 .ics 文件。": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Exports Reminders to-dos in a chosen scope as an .ics file."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Exporta las tareas de Recordatorios según el alcance elegido como archivo .ics."
+          }
+        }
+      }
+    },
+    "把「日历」的事件按时间范围导出为 .ics 文件。": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Exports Calendar events within a date range as an .ics file."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Exporta los eventos de Calendario dentro de un rango de fechas como archivo .ics."
+          }
+        }
+      }
+    },
+    "提前 %@": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%@ before"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%@ antes"
+          }
+        }
+      }
+    },
+    "提醒": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Alerts"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Avisos"
+          }
+        }
+      }
+    },
+    "提醒×%lld": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Alerts ×%lld"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Avisos ×%lld"
+          }
+        }
+      }
+    },
+    "提醒事项": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Reminders"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Recordatorios"
+          }
+        }
+      }
+    },
+    "提醒事项权限被拒绝": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Reminders access denied"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Acceso a Recordatorios denegado"
+          }
+        }
+      }
+    },
+    "提醒事项权限被拒绝。请到「系统设置 → 隐私与安全性 → 提醒事项」允许本 App 访问，再重新导入。": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Reminders access was denied. Allow access in System Settings → Privacy & Security → Reminders, then import again."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Se denegó el acceso a Recordatorios. Permite el acceso en Ajustes del Sistema → Privacidad y seguridad → Recordatorios y vuelve a importar."
+          }
+        }
+      }
+    },
+    "新列表名": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "New list name"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Nombre de la lista"
+          }
+        }
+      }
+    },
+    "新建列表…": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "New list…"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Nueva lista…"
           }
         }
       }
@@ -1409,82 +1633,50 @@
         }
       }
     },
-    "导入完成": {
+    "无法识别的时区 %@（已按本机时区处理）": {
       "localizations": {
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "Import Complete"
+            "value": "unrecognized time zone %@ (interpreted in this device's time zone)"
           }
         },
         "es": {
           "stringUnit": {
             "state": "translated",
-            "value": "Importación completada"
+            "value": "zona horaria no reconocida %@ (interpretada en la zona horaria de este dispositivo)"
           }
         }
       }
     },
-    "待办（%lld）": {
+    "日历": {
       "localizations": {
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "To-dos (%lld)"
+            "value": "Calendars"
           }
         },
         "es": {
           "stringUnit": {
             "state": "translated",
-            "value": "Tareas (%lld)"
+            "value": "Calendarios"
           }
         }
       }
     },
-    "事件（%lld）": {
+    "日历「%@」": {
       "localizations": {
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "Events (%lld)"
+            "value": "calendar “%@”"
           }
         },
         "es": {
           "stringUnit": {
             "state": "translated",
-            "value": "Eventos (%lld)"
-          }
-        }
-      }
-    },
-    "类型": {
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Type"
-          }
-        },
-        "es": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Tipo"
-          }
-        }
-      }
-    },
-    "待办": {
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "To-do"
-          }
-        },
-        "es": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Tarea"
+            "value": "calendario “%@”"
           }
         }
       }
@@ -1521,194 +1713,34 @@
         }
       }
     },
-    "截止": {
+    "日历名（留空＝所有日历）": {
       "localizations": {
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "Due"
+            "value": "Calendar name (empty = all calendars)"
           }
         },
         "es": {
           "stringUnit": {
             "state": "translated",
-            "value": "Vence"
+            "value": "Nombre del calendario (vacío = todos los calendarios)"
           }
         }
       }
     },
-    "开始": {
+    "日历权限被拒绝。请到「系统设置 → 隐私与安全性 → 日历」允许本 App 访问，再重新导入。": {
       "localizations": {
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "Starts"
+            "value": "Calendar access was denied. Allow access in System Settings → Privacy & Security → Calendars, then import again."
           }
         },
         "es": {
           "stringUnit": {
             "state": "translated",
-            "value": "Comienza"
-          }
-        }
-      }
-    },
-    "优先级": {
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Priority"
-          }
-        },
-        "es": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Prioridad"
-          }
-        }
-      }
-    },
-    "状态": {
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Status"
-          }
-        },
-        "es": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Estado"
-          }
-        }
-      }
-    },
-    "高": {
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "High"
-          }
-        },
-        "es": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Alta"
-          }
-        }
-      }
-    },
-    "中": {
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Medium"
-          }
-        },
-        "es": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Media"
-          }
-        }
-      }
-    },
-    "低": {
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Low"
-          }
-        },
-        "es": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Baja"
-          }
-        }
-      }
-    },
-    "提醒": {
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Alerts"
-          }
-        },
-        "es": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Avisos"
-          }
-        }
-      }
-    },
-    "重复": {
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Repeats"
-          }
-        },
-        "es": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Repetición"
-          }
-        }
-      }
-    },
-    "备注": {
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Notes"
-          }
-        },
-        "es": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Notas"
-          }
-        }
-      }
-    },
-    "去向": {
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Imported to"
-          }
-        },
-        "es": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Importado a"
-          }
-        }
-      }
-    },
-    "时间": {
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Time"
-          }
-        },
-        "es": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Hora"
+            "value": "Se denegó el acceso a Calendario. Permite el acceso en Ajustes del Sistema → Privacidad y seguridad → Calendarios y vuelve a importar."
           }
         }
       }
@@ -1729,146 +1761,418 @@
         }
       }
     },
-    "地点": {
+    "时间": {
       "localizations": {
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "Location"
+            "value": "Time"
           }
         },
         "es": {
           "stringUnit": {
             "state": "translated",
-            "value": "Ubicación"
+            "value": "Hora"
           }
         }
       }
     },
-    "%@ 截止": {
+    "时间范围": {
       "localizations": {
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "Due %@"
+            "value": "Date range"
           }
         },
         "es": {
           "stringUnit": {
             "state": "translated",
-            "value": "Vence %@"
+            "value": "Rango de fechas"
           }
         }
       }
     },
-    "准时": {
+    "更新日志": {
       "localizations": {
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "At time of event"
+            "value": "Changelog"
           }
         },
         "es": {
           "stringUnit": {
             "state": "translated",
-            "value": "A la hora del evento"
+            "value": "Registro de cambios"
           }
         }
       }
     },
-    "提前 %@": {
+    "有 %lld 条之前导入过。": {
       "localizations": {
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "%@ before"
+            "value": "%lld item(s) were imported before."
           }
         },
         "es": {
           "stringUnit": {
             "state": "translated",
-            "value": "%@ antes"
+            "value": "%lld elemento(s) ya se importaron antes."
           }
         }
       }
     },
-    "延后 %@": {
+    "有新版 v%@ ↗": {
       "localizations": {
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "%@ after"
+            "value": "New version v%@ ↗"
           }
         },
         "es": {
           "stringUnit": {
             "state": "translated",
-            "value": "%@ después"
+            "value": "Nueva versión v%@ ↗"
           }
         }
       }
     },
-    "%lld 分钟": {
+    "查看更新日志": {
       "localizations": {
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "%lld min"
+            "value": "View changelog"
           }
         },
         "es": {
           "stringUnit": {
             "state": "translated",
-            "value": "%lld min"
+            "value": "Ver registro de cambios"
           }
         }
       }
     },
-    "%lld 小时": {
+    "检查并安装新版本": {
       "localizations": {
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "%lld h"
+            "value": "Check for and install the latest version"
           }
         },
         "es": {
           "stringUnit": {
             "state": "translated",
-            "value": "%lld h"
+            "value": "Buscar e instalar la última versión"
           }
         }
       }
     },
-    "%lld 天": {
+    "检查更新…": {
       "localizations": {
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "%lld d"
+            "value": "Check for Updates…"
           }
         },
         "es": {
           "stringUnit": {
             "state": "translated",
-            "value": "%lld d"
+            "value": "Buscar actualizaciones…"
           }
         }
       }
     },
-    "到达「%@」时": {
+    "检测到重复导入": {
       "localizations": {
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "On arriving at “%@”"
+            "value": "Duplicate import detected"
           }
         },
         "es": {
           "stringUnit": {
             "state": "translated",
-            "value": "Al llegar a “%@”"
+            "value": "Importación duplicada detectada"
+          }
+        }
+      }
+    },
+    "每 %lld 个月重复": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Repeats every %lld months"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Se repite cada %lld meses"
+          }
+        }
+      }
+    },
+    "每 %lld 周重复": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Repeats every %lld weeks"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Se repite cada %lld semanas"
+          }
+        }
+      }
+    },
+    "每 %lld 天重复": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Repeats every %lld days"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Se repite cada %lld días"
+          }
+        }
+      }
+    },
+    "每 %lld 年重复": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Repeats every %lld years"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Se repite cada %lld años"
+          }
+        }
+      }
+    },
+    "每周重复": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Repeats weekly"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Se repite semanalmente"
+          }
+        }
+      }
+    },
+    "每天重复": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Repeats daily"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Se repite a diario"
+          }
+        }
+      }
+    },
+    "每年重复": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Repeats yearly"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Se repite anualmente"
+          }
+        }
+      }
+    },
+    "每月重复": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Repeats monthly"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Se repite mensualmente"
+          }
+        }
+      }
+    },
+    "没有要导入的条目": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Nothing to import"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Nada que importar"
+          }
+        }
+      }
+    },
+    "没解析到任何 VTODO 条目（共 %lld 个文件）": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "No VTODO items found (%lld file(s))."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "No se encontraron elementos VTODO (%lld archivo(s))."
+          }
+        }
+      }
+    },
+    "没解析到任何待办或事件（共 %lld 个文件）": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "No to-dos or events found (%lld file(s))"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "No se encontraron tareas ni eventos (%lld archivo(s))"
+          }
+        }
+      }
+    },
+    "注意：%lld 条含本 App 写不进的字段（%@），已忽略": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Note: %lld item(s) had fields this app can’t write (%@); ignored."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Nota: %lld elemento(s) tenían campos que esta app no puede escribir (%@); ignorados."
+          }
+        }
+      }
+    },
+    "状态": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Status"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Estado"
+          }
+        }
+      }
+    },
+    "目标列表": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Target list"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Lista de destino"
+          }
+        }
+      }
+    },
+    "目标列表（留空＝默认列表）": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Target list (empty = default list)"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Lista de destino (vacía = lista por defecto)"
+          }
+        }
+      }
+    },
+    "目标日历": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Target calendar"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Calendario de destino"
+          }
+        }
+      }
+    },
+    "目标日历（留空＝默认日历）": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Target calendar (empty = default calendar)"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Calendario de destino (vacío = calendario por defecto)"
           }
         }
       }
@@ -1889,18 +2193,338 @@
         }
       }
     },
-    "关闭": {
+    "类型": {
       "localizations": {
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "Close"
+            "value": "Type"
           }
         },
         "es": {
           "stringUnit": {
             "state": "translated",
-            "value": "Cerrar"
+            "value": "Tipo"
+          }
+        }
+      }
+    },
+    "网址": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "URL"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "URL"
+          }
+        }
+      }
+    },
+    "范围": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Scope"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Alcance"
+          }
+        }
+      }
+    },
+    "计划": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Scheduled"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Programado"
+          }
+        }
+      }
+    },
+    "请先选择一个列表": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Choose a list first"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Elige una lista primero"
+          }
+        }
+      }
+    },
+    "请至少勾选一条要导出的项目": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Select at least one item to export"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Selecciona al menos un elemento para exportar"
+          }
+        }
+      }
+    },
+    "请选择一个或多个 .ics 文件导入，或用本 App 打开 .ics 文件": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Choose one or more .ics files to import, or open an .ics file with this app."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Elige uno o más archivos .ics para importar, o abre un archivo .ics con esta app."
+          }
+        }
+      }
+    },
+    "读取事件失败：%@": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Failed to read events: %@"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "No se pudieron leer los eventos: %@"
+          }
+        }
+      }
+    },
+    "读取条目失败：%@": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Failed to read items: %@"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Error al leer elementos: %@"
+          }
+        }
+      }
+    },
+    "跳过已导入过的条目": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Skip previously imported items"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Omitir elementos ya importados"
+          }
+        }
+      }
+    },
+    "这个列表没有提醒": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "No reminders in this list"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "No hay recordatorios en esta lista"
+          }
+        }
+      }
+    },
+    "这个日历在所选范围内没有事件": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "No events in this calendar within the selected range"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "No hay eventos en este calendario dentro del rango seleccionado"
+          }
+        }
+      }
+    },
+    "选择 .ics 文件导入（可多选）": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Choose .ics file(s) to import"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Elegir archivos .ics para importar"
+          }
+        }
+      }
+    },
+    "选择文件失败：%@": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Failed to choose files: %@"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "No se pudieron seleccionar los archivos: %@"
+          }
+        }
+      }
+    },
+    "选择要导出的列表": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Choose a list to export"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Elige una lista para exportar"
+          }
+        }
+      }
+    },
+    "重复": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Repeats"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Repetición"
+          }
+        }
+      }
+    },
+    "高": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "High"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Alta"
+          }
+        }
+      }
+    },
+    "默认列表": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Default list"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Lista predeterminada"
+          }
+        }
+      }
+    },
+    "默认日历": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Default Calendar"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Calendario predeterminado"
+          }
+        }
+      }
+    },
+    "（共 %lld 个文件）": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "(%lld files)"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "(%lld archivos)"
+          }
+        }
+      }
+    },
+    "；": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "; "
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "; "
           }
         }
       }
